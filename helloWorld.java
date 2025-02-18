@@ -1,6 +1,6 @@
 // helloWorld.java
 // This is a test
-class Test
+class helloWorld
 {
     public static void main(String[] args)
     {
