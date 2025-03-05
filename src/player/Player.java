@@ -1,11 +1,17 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import tile.Railroad;
+import tile.Tile;
+import tile.Utility;
 
 public class Player{
     private String name;
     private int money;
-    private ArrayList<Property> properties;
+    private ArrayList<Tile> properties;
+    //private ArrayList<Card> cards;
     private int position;
     private String token;
     private boolean inJail;
@@ -15,21 +21,19 @@ public class Player{
         this.name = name;
         this.money = money;
         this.token = token;
-        this.position = 0;
-        this.inJail = false;
-        this.timeInJail = 0;
-        this.properties = new ArrayList<>();
+        position = 0;
+        inJail = false;
+        timeInJail = 0;
+        properties = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
 
-    public int getMoney() {
-        return money;
-    }
+    public int getMoney() {return money;}
 
-    public String getProperties() {
+    public ArrayList<Tile> getProperties() {return properties;}
+
+    public String getPropertiesString() {
         StringBuilder propertyString = new StringBuilder();
     
         for (int i = 0; i < properties.size(); i++) {
@@ -42,21 +46,13 @@ public class Player{
         return propertyString.toString();
     }
 
-    public int getPosition() {
-        return position;
-    }
+    public int getPosition() {return position;}
 
-    public String getToken() {
-        return token;
-    }
+    public String getToken() {return token;}
 
-    public boolean isJailed() {
-        return inJail;
-    }
+    public boolean isJailed() {return inJail;}
 
-    public int jailTime() {
-        return timeInJail;
-    }
+    public int jailTime() {return timeInJail;}
 
     public void reduceMoney(int amount) {
         if (amount < 0) {
@@ -85,6 +81,38 @@ public class Player{
     public void releaseFromJail() {
         inJail = false;
         timeInJail = 0;
+    }
+
+    public int roll(int numDice) {
+        if (numDice > 2 || numDice < 1) {
+            throw new IllegalArgumentException("Only row 1 or 2 dice.");
+        }
+        Random random = new Random();
+
+        int roll1 = random.nextInt(6) + 1;
+        int roll2 = random.nextInt(6) + 1;
+
+        return (numDice == 1) ? roll1 : (roll1 + roll2);
+    }
+
+    public boolean ownsBothUtilities() {
+        int check = 0;
+        for (Tile property : properties) {
+            if (property instanceof Utility) {
+                check += 1;
+            }
+        }
+        return (check == 2);
+    }
+
+    public int railroadCount() {
+        int count = 0;
+        for (Tile property : properties) {
+            if (property instanceof Railroad) {
+                count += 1;
+            }
+        }
+        return count;
     }
 
 }
