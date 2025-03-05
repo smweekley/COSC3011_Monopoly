@@ -1,7 +1,11 @@
 package tile;
 
+import player.Player;
+
 public abstract class Tile{
-    public abstract void landOn();
+    protected String name;
+
+    public abstract void landOn(Player player); // Needs player argument to know who to affect
     public abstract String getName();
-    public abstract void setName();
+    public abstract void setName(String name);
 }
