@@ -1,0 +1,81 @@
+import java.util.Random;
+
+
+public class CommunityChest implements Player {
+  
+  int[] cards = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+  int cardDrawn = 0;
+  Random cardGenerator = new Random();
+  Deque<Integer> chestDeck = new ArrayDeque<>();
+  public CommunityChest() {
+    if (chestDeck.isempty()){ //the shuffle function if the deck is empty
+      Set<Integer> drawnCards = new HashSet<>();
+      while(drawnCards.size() < 15) {
+        int nextCard = cardGenerator.nextInt(15) + 1;
+        if(!drawnCards.contains(nextCard)) {
+          drawnCards.add(nextCard);
+          chestDeck.addFirst(nextCard);
+        }
+      }
+    }
+  }
+
+  public void drawCard() {
+    if(!chestDeck.isEmpty()) {
+      cardDrawn = chestDeck.pop();
+      callCardEffect(cardDrawn);
+    }
+    else {
+      communityChest();
+    }
+  }
+
+private void callCardEffect(int card) {
+    switch (card) {
+      case 1; 
+        assessed();
+        break;
+      case 2;
+        advanceToGo();
+        break;
+      case 3:
+        eachPlayerCollect();
+        break;
+      case 4:
+        xMasFund();
+        break;
+      case 5:
+        taxRefund();
+        break;
+      case 6:
+        beautyContest();
+        break;
+      case 7:
+        schoolTax();
+        break;
+      case 8:
+        stockSale();
+        break;
+      case 9:
+        bankError();
+        break;
+      case 10:
+        doctor();
+        break;
+      case 11:
+        lifeInsurance();
+        break;
+      case 12:
+        hospitalBill();
+        break;
+      case 13:
+        marriage();
+        break;
+      case 14:
+        visitJail();
+        break;
+      case 15:
+        inherit();
+        break;
+    }
+  }
