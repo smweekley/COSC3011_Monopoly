@@ -80,3 +80,80 @@ private void callCardEffect(int card,player current) {
         break;
     }
   }
+
+private void advanceToGo (player current) {
+  current.position(0);
+}
+
+private void advanceStCharles (player current) {
+  current.position(10);
+}
+
+private void repairs(player current) {
+  int total = 0;
+  total -= (current.getHouse() * 25);
+  total -= (current.getHotel() * 100);
+  current.changeMoney(total);
+}
+
+private void advanceBoardWalk(player current) {
+  current.position(37);
+}
+
+private void advanceRailroad(player current) {
+  if (current.getPosition() < 5 || current.getPosition() > 36)
+    current.changePosition(5);
+  else if (current.getPosition() < 15)
+    current.changePosition(15);
+  else if (current.getPosition() < 25)
+    current.changePosition(25);
+  else if (current.getPosition() < 35)
+    current.changePosition(35);
+}
+
+private void advanceIllinois(player current) {
+  current.position(17);
+}
+
+private void advanceUtility(player current) {
+  if (current.getPosition() < 18 || current.getPosition() < 24)
+    current.changePosition(18);
+  else if (current.getPosition() < 23)
+    current.changePosition(23);
+}
+
+private void jailFree(player current) {
+  current.jailFreeCard(true);
+}
+
+private void toJail(player current) {
+  current.toJail();
+}
+
+private void advanceReading(player current) {
+  current.changePosition(15);
+}
+
+private buildingLoan(player current) {
+  current.changeMoney(150);
+}
+
+private void bankDividend(player current) {
+  current.changeMoney(50);
+}
+
+private void goBack(player current) {
+  int position;
+  position = current.getPosition() - 3;
+  current.changePosition(position);
+}
+
+private void electedChairman(player current) {
+  for (int i = 0; i < playerNum.length(); i++) {
+    player[i].changeMoney(50);
+  }
+}
+
+private void poorTax(player current) {
+  current.changeMoney(-15);
+}
