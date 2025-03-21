@@ -1,0 +1,82 @@
+import java.util.Random;
+
+
+
+public class Chance implements Board {
+  
+  int[] cards = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+  int cardDrawn = 0;
+  Random cardGenerator = new Random();
+  Deque<Integer> chestDeck = new ArrayDeque<>();
+  public CommunityChest() {
+    if (chestDeck.isempty()){ //the shuffle function if the deck is empty
+      Set<Integer> drawnCards = new HashSet<>();
+      while(drawnCards.size() < 15) {
+        int nextCard = cardGenerator.nextInt(15) + 1;
+        if(!drawnCards.contains(nextCard)) {
+          drawnCards.add(nextCard);
+          chestDeck.addFirst(nextCard);
+        }
+      }
+    }
+  }
+
+  public void drawCard(player current) {
+    if(!chestDeck.isEmpty()) {
+      cardDrawn = chestDeck.pop();
+      callCardEffect(cardDrawn, current);
+    }
+    else {
+      communityChest();
+    }
+  }
+
+private void callCardEffect(int card,player current) {
+    switch (card) {
+      case 1; 
+        advanceToGo(current);
+        break;
+      case 2;
+        advanceStCharles(current);
+        break;
+      case 3:
+        repairs(current);
+        break;
+      case 4:
+        advanceBoardWalk(current);
+        break;
+      case 5:
+        advanceRailroad(current);
+        break;
+      case 6:
+        advanceIllinois(current);
+        break;
+      case 7:
+        advanceUtility(current);
+        break;
+      case 8:
+        jailFree(current);
+        break;
+      case 9:
+        toJail(current);
+        break;
+      case 10:
+        advanceReading(current);
+        break;
+      case 11:
+        buildingLoan(current);
+        break;
+      case 12:
+        bankDividend(current);
+        break;
+      case 13:
+        goBack(current);
+        break;
+      case 14:
+        electedChairman(current);
+        break;
+      case 15:
+        poorTax(current);
+        break;
+    }
+  }
