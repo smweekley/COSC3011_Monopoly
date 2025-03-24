@@ -1,4 +1,4 @@
-package tile;
+package src.tile;
 
 import player.Player;
 

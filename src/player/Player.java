@@ -1,4 +1,4 @@
-package player;
+package src.player;
 
 import java.util.ArrayList;
 import java.util.Random;
