@@ -6,6 +6,7 @@ import java.util.Random;
 import tile.Railroad;
 import tile.Tile;
 import tile.Utility;
+import tile.Property;
 
 public class Player{
     private String name;
@@ -115,4 +116,28 @@ public class Player{
         return count;
     }
 
+    public int houseCount() {
+        int count = 0;
+        for (Tile property : properties) {
+            if (property instanceof Property) {
+                int houseCount = ((Property) property).getHouseCount(); // Only add to count if it's less than 5 (i.e., not a hotel)
+                if (houseCount < 5) {
+                    count += houseCount;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int hotelCount() {
+        int count = 0;
+        for (Tile property : properties) {
+            if (property instanceof Property) {
+                if (((Property) property).getHouseCount() == 5) { // A count of 5 is a hotel
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
