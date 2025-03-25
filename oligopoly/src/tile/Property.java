@@ -50,6 +50,8 @@ public class Property extends Tile{
 
     public int getRent() { return rent[houseCount]; }
 
+    public int getHouseCount() { return houseCount; }
+
     public boolean isOwned() { return propertyOwned; }
 
     public void setColorSet(List<Property> colorSet) { this.colorSet = colorSet; }  // Match properties based on color
