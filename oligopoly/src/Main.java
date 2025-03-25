@@ -4,13 +4,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 import board.Board;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Pane root = FXMLLoader.load(getClass().getResource("fxml/board.fxml"));
+        File fxmlFile = new File("src/fxml/board.fxml");
+        Pane root = FXMLLoader.load(fxmlFile.toURI().toURL());
         primaryStage.setTitle("Oligopoly");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
