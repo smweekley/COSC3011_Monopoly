@@ -38,6 +38,8 @@ public class Controller {
         //make the players
         javafx.scene.paint.Color[] colors = {javafx.scene.paint.Color.BLACK,javafx.scene.paint.Color.BLUE,javafx.scene.paint.Color.GREEN};
         int players = 3;    // change to change number of players
+        //in the future may be best moved and rewritten when players can select their own icons/import them from file
+        //see Board.java line 37
         for (int i = 0; i < players; i++) {
             Player player = new Player(colors[i]);
             boardPane.getChildren().add(player.getTokenc());

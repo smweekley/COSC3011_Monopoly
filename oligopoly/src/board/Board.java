@@ -12,7 +12,9 @@ public class Board {
 
     private final ImageView imageView;
 
-    private final ArrayList<Player> players;       // List of players
+    private ArrayList<Player> players;       // List of players
+
+    private ArrayList<Tile> tiles;       // List of tiles
 
     public Board(ImageView imageView) {
         this.imageView = imageView;
@@ -23,8 +25,48 @@ public class Board {
         players.add(player);
     }
 
+    public void removePlayer(Player player) {
+        players.add(player);
+    }
+
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    //will need updating
+    //also Controller.java seems to do some of this already    (line 43-47)
+    //however in the future when we have gui for players selecting their icons
+    //and theyre iteratively added, i think making a list of those players as theyre added
+    //then sending to the new board object via initBoard (referencing Miro) could be useful
+    public void initBoard(ArrayList<Player> initialPlayers) {
+        for(Player player : initPlayers) { 
+            addPlayer(player);
+        }
+/*  commented because some of this is not implemented
+        Tile go = new Go();
+        Tile chance = new chanceTile(); 
+        Tile chest = new communityChestTile(); //reuse same references to these types of tile
+        Tile incomeTax = new Tax(50); //no Tax subclass exists, so this is placeholder
+        Tile jail = new Jail();
+        Tile A1 = new Property("A1" , 80 , 50);
+        Tile A2 = new Property("A2" , 120 , 50);
+        Tile B1 = new Property("B1" , 150, 50);
+        Tile B2 = new Property("B2" , 150, 50);
+        Tile B3 = new Property("B3" , 180, 50);
+        Tile X1 = new Railroad("X1" , 200);
+        tiles[0]  = go;
+        tiles[1]  = A1;
+        tiles[2]  = chest;
+        tiles[3]  = A2;
+        tiles[4]  = incomeTax;
+        tiles[5]  = X1
+        tiles[6]  = B1;
+        tiles[7]  = chance;
+        tiles[8]  = B2;
+        tiles[9]  = B3;
+        tiles[10] = jail;
+        //etc
+      */  
     }
 
     // Absolute move (move player x to position y where position 0 is go 1 is next etc 40 is "in jail")

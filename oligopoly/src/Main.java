@@ -4,6 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import board.Board;
 
 public class Main extends Application {
 
