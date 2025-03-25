@@ -39,11 +39,11 @@ public class Board {
     //however in the future when we have gui for players selecting their icons
     //and theyre iteratively added, i think making a list of those players as theyre added
     //then sending to the new board object via initBoard (referencing Miro) could be useful
-    public void initBoard(ArrayList<Player> initialPlayers) {
-        for(Player player : initPlayers) { 
-            addPlayer(player);
-        }
-/*  commented because some of this is not implemented
+    //public void initBoard(ArrayList<Player> initialPlayers) {
+    //    for(Player player : initPlayers) { 
+    //        addPlayer(player);
+    //    }
+    /*  commented because some of this is not implemented
         Tile go = new Go();
         Tile chance = new chanceTile(); 
         Tile chest = new communityChestTile(); //reuse same references to these types of tile
@@ -67,8 +67,8 @@ public class Board {
         tiles[9]  = B3;
         tiles[10] = jail;
         //etc
-      */  
     }
+    */
 
     // Absolute move (move player x to position y where position 0 is go 1 is next etc 40 is "in jail")
     public void movePlayerToPosition(Player player, int position) {
