@@ -1,0 +1,1 @@
+java --module-path ".\lib\javafx\lib" --add-modules javafx.controls,javafx.fxml -cp classFiles Main && java --module-path ".\lib\javafx\lib" --add-modules javafx.controls,javafx.fxml -cp classFiles Main
