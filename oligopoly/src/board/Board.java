@@ -6,6 +6,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.shape.Circle;
 import javafx.scene.image.ImageView;
 import java.util.ArrayList;
+import tile.Tile;
 
 
 public class Board {
