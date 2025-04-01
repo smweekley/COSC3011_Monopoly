@@ -7,6 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import state.GameState;
+import state.StateManager;
 
 public class Controller {
 
@@ -22,6 +25,10 @@ public class Controller {
     private TextField absoluteIn;
     @FXML
     private TextField playerIn;
+    @FXML 
+    private Button saveGame;
+    @FXML 
+    private Button loadGame;
 
 
     public void initialize() {
@@ -86,5 +93,25 @@ public class Controller {
             System.out.println("bad absolute move");
         }
         board.movePlayerToPosition(board.getPlayers().get(player),spot);
+    }
+
+    // Save and load game buttons
+    @FXML
+    private void saveGame() {
+        System.out.println("Saving game...");
+        GameState state = new GameState(board);
+        StateManager.saveGame(state, "test1.ser"); // Use a file extension
+    }
+    @FXML
+    private void loadGame() {
+        System.out.println("Loading game...");
+        GameState loadedState = StateManager.loadGame("test1.ser");
+        if (loadedState != null) {
+            board = loadedState.getBoard();
+            // Update the UI or game logic with the loaded board state
+            System.out.println("Game loaded successfully.");
+        } else {
+            System.out.println("Failed to load game.");
+        }
     }
 }
