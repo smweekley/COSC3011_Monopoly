@@ -44,6 +44,16 @@
                         <Button mnemonicParsing="false" onAction="#doAbsoluteMove" text="absolute" />
                      </children>
                   </VBox>
+                  <VBox>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#saveGame" text="Save Game" />
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#loadGame" text="Load Game" />
+                     </children>
+                  </VBox>
                </children>
             </TilePane>
          </children>
