@@ -105,11 +105,12 @@ public class Chance {
 
     private void advanceToGo(Player current) {
         current.changePosition(0);
-        
+        image(primaryStage, "File:src/board/chance/advanceToGo.jpg");
     }
 
     private void advanceStCharles(Player current) {
         current.changePosition(10);
+        image(primaryStage, "File:src/board/chance/advanceStCharles.jpg");
     }
 
     private void repairs(Player current) {
@@ -117,10 +118,12 @@ public class Chance {
         total -= (current.getHouse() * 25);
         total -= (current.getHotel() * 100);
         current.changeMoney(total);
+        image(primaryStage, "File:src/board/chance/repairs.jpg");
     }
 
     private void advanceBoardWalk(Player current) {
         current.changePosition(37);
+        image(primaryStage, "File:src/board/chance/advanceBoardWalk.jpg");
     }
 
     private void advanceRailroad(Player current) {
@@ -132,10 +135,12 @@ public class Chance {
             current.changePosition(25);
         else if (current.getPosition() < 35)
             current.changePosition(35);
+        image(primaryStage, "File:src/board/chance/advanceRailroad.jpg");
     }
 
     private void advanceIllinois(Player current) {
         current.changePosition(17);
+        image(primaryStage, "File:src/board/chance/advanceIllinois.jpg");
     }
 
     private void advanceUtility(Player current) {
@@ -143,42 +148,51 @@ public class Chance {
             current.changePosition(18);
         else if (current.getPosition() < 23)
             current.changePosition(23);
+        image(primaryStage, "File:src/board/chance/advanceUtility.jpg");
     }
 
     private void jailFree(Player current) {
         current.jailFreeCard(true);
+        image(primaryStage, "File:src/board/chance/jailFree.jpg");
     }
 
     private void toJail(Player current) {
         current.toJail();
+        image(primaryStage, "File:src/board/chance/toJail.jpg");
     }
 
     private void advanceReading(Player current) {
         current.changePosition(15);
+        image(primaryStage, "File:src/board/chance/advanceReading.jpg");
     }
 
     private void buildingLoan(Player current) {
         current.reduceMoney(150);
+        image(primaryStage, "File:src/board/chance/buildingLoan.jpg");
     }
 
     private void bankDividend(Player current) {
         current.addMoney(50);
+        image(primaryStage, "File:src/board/chance/bankDividend.jpg");
     }
 
     private void goBack(Player current) {
         int position;
         position = current.getPosition() - 3;
         current.changePosition(position);
+        image(primaryStage, "File:src/board/chance/goBack.jpg");
     }
 
     private void electedChairman(Player current) {
         for (int i = 0; i < board.players.length(); i++) {
             current[i].changeMoney(50);
         }
+        image(primaryStage, "File:src/board/chance/electedChairman.jpg");
     }
 
     private void poorTax(Player current) {
         current.changeMoney(-15);
+        image(primaryStage, "File:src/board/chance/poorTax.jpg");
     }
 
     private image (stage primaryStage, String imagePath) {
