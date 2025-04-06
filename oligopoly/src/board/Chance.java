@@ -6,6 +6,13 @@ import java.util.Set;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.ArrayDeque;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import player.Player;
 
@@ -98,6 +105,7 @@ public class Chance {
 
     private void advanceToGo(Player current) {
         current.changePosition(0);
+        
     }
 
     private void advanceStCharles(Player current) {
@@ -171,6 +179,27 @@ public class Chance {
 
     private void poorTax(Player current) {
         current.changeMoney(-15);
+    }
+
+    private image (stage primaryStage, String imagePath) {
+
+        Image cardPic = new Image(imagePath);
+        ImageView showImage = new ImageView(cardPic);
+
+        Button closeButton = new Button("ok");
+        closeButton.setOnAction(event -> primaryStage.close());
+
+        StackPane layout = new StackPane();
+        layout.getChrildren().addAll(imageView, closeButton);
+
+        StackPane.setAlignment(closeButton, javafx.geometry.pos.BOTTOM_CENTER);
+
+        Scene windowSize = new Scene(layout, 400, 300);
+
+        primaryStage.setTitle("Chance Card Drawn");
+        primaryStage.setScene(windowSize);
+
+        primaryStage.show();
     }
 }
 
