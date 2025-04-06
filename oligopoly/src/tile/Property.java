@@ -4,16 +4,19 @@ package tile;
 
 // import javafx stuff
 import player.Player;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class Property extends Tile{
     private Player propertyOwner;
     private final int[] rent = {50, 200, 600, 1400, 1700, 2000}; // {0 houses, 1 house, 2, 3, 4, 1 hotel}
     private final int purchasePrice;
-    private int houseCount; // 0-4 are houses, 5 is a hotel
+    private int houseCount;
+    private int hotelCount;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
     private boolean propertyOwned;
-    private List<Property> colorSet; // Properties of same color
+    private ArrayList<Property> colorSet; // Properties of same color
 
     // Constructor
     public Property(String name, int purchasePrice, int houseCost) {
@@ -23,20 +26,26 @@ public class Property extends Tile{
         this.houseCount = 0;
         this.houseCost = houseCost;
         this.propertyOwned = false;
-        //  Handle colorSet here?
+    }
+
+    // Match properties based on color. Call this AFTER all properties have been constructed
+    // example: List<Property> oranges = Arrays.asList(prop1, prop2, prop3)
+    //          for ( Property prop : oranges) { prop.setColorSet(oranges); }
+    public void setColorSet(ArrayList<Property> colorSet) {
+        this.colorSet = new ArrayList<Property>(colorSet);
+        this.colorSet.remove(this); // Remove self-reference
     }
 
     // Constructor from save data (assuming we just read from lines of plaintext detailing each tile/player's info)
-    public Property(String name, int purchasePrice, Player propertyOwner, int houseCount, int houseCost) {
+    public Property(String name, int purchasePrice, int houseCost, Player propertyOwner, int houseCount) {
         setName(name);
         this.purchasePrice = purchasePrice;
         this.propertyOwner = propertyOwner;
         this.houseCount = houseCount;
         this.houseCost = houseCost;
-        if (propertyOwner != null) {
-            this.propertyOwned = false;
-        } else { this.propertyOwned = true; }
-        // Handle colorSet here?
+
+        if (propertyOwner != null) this.propertyOwned = false;
+        else this.propertyOwned = true;
     }
 
     // Getters and Setters
@@ -48,18 +57,19 @@ public class Property extends Tile{
 
     public int getPurchasePrice() { return purchasePrice; }
 
-    public int getRent() { return rent[houseCount]; }
+    public int getRent() { return rent[houseCount + hotelCount]; }
 
     public int getHouseCount() { return houseCount; }
 
     public boolean isOwned() { return propertyOwned; }
 
-    public void setColorSet(List<Property> colorSet) { this.colorSet = colorSet; }  // Match properties based on color
-
     public void setOwner(Player player) {
         propertyOwner = player;
         propertyOwned = true;
     }
+
+    // Return an unalterable copy of colorSet for exterior checks
+    public List<Property> getColorSet() { return Collections.unmodifiableList(colorSet); }
     
     // Buy Property
     public boolean buyProperty(Player player) {
@@ -96,57 +106,66 @@ public class Property extends Tile{
     // Build house/hotel (should be able to be done by player at any point during their turn regardless of position
     // will have to adjust for that as well as allowing player to buy multiple houses per turn given that they have the money)
     public boolean buyHouse(Player player) {
-        if (propertyOwner != player) {
+
+        if (propertyOwner != player) {  // Player doesn't own property
             System.out.println("You don't own this property.");
             return false;
         }
-        if (!ownsFullSet(player)) {
+
+        if (!ownsFullSet(player)) { // Player doesn't own every property in colorSet
             System.out.println("You must own all properties of this color set to build houses.");
             return false;
         }
-        if (houseCount >= 5) {
+
+        if (hotelCount >= 1) {  // Player already has a hotel
             System.out.println("This property already has a hotel. You can't build any more.");
             return false;
         }
-        if (player.getMoney() < houseCost) {
+
+        if (player.getMoney() < houseCost) {    // Player is too poor, lmao stay mad wagey
             System.out.println("You don't have enough money to buy a house.");
             return false;
         }
-        /* Implement even distribution of houses. Very annoying. Will come back to this
-        if ( houses not evenly distributed) {
-            System.out.println("Houses must be built evenly across all properties in the color set.");
+
+        // Ensure even distribution of houses among colorSet
+        int minHouse = (this.houseCount + this.hotelCount), maxHouse = (this.houseCount + this.hotelCount);
+        for ( Property prop : colorSet) {
+            int buildings = ( prop.houseCount + prop.hotelCount );
+            if ( buildings < minHouse ) minHouse = buildings;
+            if ( buildings > maxHouse ) maxHouse = buildings;
+        }
+        if ( (this.houseCount + this.hotelCount) > minHouse) {
+            System.out.println("This property must have the least number of houses/hotels to build on it.");
             return false;
         }
-        */
 
-        player.reduceMoney(houseCost);
-        houseCount++;
 
-        if (houseCount == 5) {
-            System.out.println("A hotel has been built on " + name + ".");
+        // Build house/hotel
+        player.reduceMoney(this.houseCost);
+        if (this.houseCount == 4) {
+            this.hotelCount++;
+        }
+        else {
+            this.houseCount++;
+        }
+
+        if (this.hotelCount >= 1) {
+            System.out.println("A hotel has been built on " + this.name + ".");
         } else {
-            System.out.println("A house has been built on " + name + ". Total houses: " + houseCount);
+            System.out.println("A house has been built on " + this.name + ". Total houses: " + this.houseCount);
         }
         return true;
     }
 
     // Check if player owns all properties in colorSet
     private boolean ownsFullSet(Player player) {
-        int ownedProp = 0;
         for (Property property : colorSet) {
-            if (property.getOwner() == player) {
-                ownedProp++;
+            if (property.getOwner() != player) {
+                return false;
             }
         }
-        if (ownedProp == colorSet.size()) {
-            return true;
-        }
-        return false;
+        return true;
     }
-
-    // Check if houses are evenly distributed across colorSet
-    //
-    //
 
     // Land On Logic
     public void landOn(Player player) {
