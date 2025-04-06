@@ -1,5 +1,7 @@
 package player;
 
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 //-------------------------------
@@ -15,14 +17,45 @@ public class Player {
     private final Circle tokenc;
     private int currentPosition;
 
+
     public Player(Color color) {
         tokenc = new Circle(10, color);
+        this.iconProperty = new SimpleObjectProperty<>(new Circle(10, color));
+        this.nameProperty = new SimpleStringProperty(color.toString());
+        this.moneyProperty = new SimpleIntegerProperty(1500);
+        this.hasGetOutOfJailProperty = new SimpleBooleanProperty(false);
     }
 
+    public Circle getTokenc() {
+        return tokenc;
+    }
 
-    public Circle getTokenc() { return tokenc; }
-    public int getCurrentPosition() { return currentPosition; }
-    public void setCurrentPosition(int position) { this.currentPosition = position; }
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int position) {
+        this.currentPosition = position;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // for the table to dynamically update you need to keep these properties updated
+    // Properties
+    private final ObjectProperty<Circle> iconProperty;
+    private final StringProperty nameProperty;
+    private final IntegerProperty moneyProperty;
+    private final BooleanProperty hasGetOutOfJailProperty;
+
+    // Property Getters
+    public ObjectProperty<Circle> iconProperty() { return iconProperty; }
+    public StringProperty nameProperty() { return nameProperty; }
+    public IntegerProperty moneyProperty() { return moneyProperty; }
+    public BooleanProperty hasItemsProperty() { return hasGetOutOfJailProperty; }
+
+
 
     //----------------------------------------------------------------------------------------
 
@@ -36,8 +69,12 @@ public class Player {
     private boolean inJail;
     private int timeInJail;
 
-    public Player(Circle tokenc, String name, int money, String token) {
+    public Player(Circle tokenc, ObjectProperty<Circle> iconProperty, StringProperty nameProperty, IntegerProperty moneyProperty, BooleanProperty hasGetOutOfJailProperty, String name, int money, String token) {
         this.tokenc = tokenc;
+        this.iconProperty = iconProperty;
+        this.nameProperty = nameProperty;
+        this.moneyProperty = moneyProperty;
+        this.hasGetOutOfJailProperty = hasGetOutOfJailProperty;
         this.name = name;
         this.money = money;
         this.token = token;
@@ -79,13 +116,15 @@ public class Player {
             throw new IllegalArgumentException("Can't remove a negative amount of money, use addMoney()");
         }
         money -= amount;
+        moneyProperty.set(money);
     }
 
     public void addMoney(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Can't add a negative amount of money, use reduceMoney()");
         }
-        money += amount;
+		money += amount;
+        moneyProperty.set(money);
     }
 
     public void movePosition(int moves) {
