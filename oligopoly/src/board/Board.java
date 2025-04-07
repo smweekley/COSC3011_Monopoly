@@ -93,8 +93,6 @@ public class Board {
         token.setLayoutX(tokenX);
         token.setLayoutY(tokenY);
         player.setCurrentPosition(position);
-        player.addMoney(position);
-
     }
 
     // relitve move (move player x, y spaces)
