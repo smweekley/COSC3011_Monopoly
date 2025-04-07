@@ -1,8 +1,12 @@
 package fxml;
 
 import board.Board;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import player.Player;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -30,6 +34,7 @@ public class Controller {
     @FXML private TableColumn<Player, String> nameColumn;
     @FXML private TableColumn<Player, Integer> moneyColumn;
     @FXML private TableColumn<Player, Boolean> itemsColumn;
+    @FXML private Text clickedOnText;
 
 
     public void initialize() {
@@ -72,7 +77,6 @@ public class Controller {
             }
         });
 
-
         //make the players
         javafx.scene.paint.Color[] colors = {javafx.scene.paint.Color.BLACK,javafx.scene.paint.Color.BLUE,javafx.scene.paint.Color.GREEN};
         int players = 3;    // change to change number of players
@@ -102,6 +106,20 @@ public class Controller {
             board.movePlayerToPosition(p, p.getCurrentPosition());
         }
     }
+    @FXML
+    private void handleImageClick(MouseEvent event) {
+        double imageViewWidth = imageView.getBoundsInLocal().getWidth();
+        double imageViewHeight = imageView.getBoundsInLocal().getHeight();
+        double originalWidth = 1080;
+        double originalHeight = 1080;
+        double scaleX = originalWidth / imageViewWidth;
+        double scaleY = originalHeight / imageViewHeight;
+        double scaledX = event.getX() * scaleX;
+        double scaledY = event.getY() * scaleY;
+        int position = Board.PositionFinder.getClosestPosition(scaledX, scaledY);
+        // edit text
+        clickedOnText.setText("Selected Tile: " + position);
+    }
 
     // These are hooked up to the buttons for testing/development
     @FXML
@@ -116,6 +134,7 @@ public class Controller {
         }
         board.relativeMove(board.getPlayers().get(player),spaces);
     }
+
     @FXML
     private void doAbsoluteMove() {
         int spot = 0;

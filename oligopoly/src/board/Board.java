@@ -1,6 +1,8 @@
 package board;
 
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import player.Player;
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Circle;
@@ -91,9 +93,12 @@ public class Board {
         token.setLayoutX(tokenX);
         token.setLayoutY(tokenY);
         player.setCurrentPosition(position);
+        player.addMoney(position);
+
     }
+
     // relitve move (move player x, y spaces)
-    public void relativeMove(Player player, int spaces){
+    public void relativeMove(Player player, int spaces) {
         int newPosition = (player.getCurrentPosition() + spaces) % 40;
         movePlayerToPosition(player, newPosition);
     }
@@ -112,7 +117,7 @@ public class Board {
                     yield new double[]{500, 500};
                 }
             };
-        }else return switch ((int) Math.floor(position / 10)) {
+        } else return switch ((int) Math.floor(position / 10)) {
             case 0 -> new double[]{100, 905 - 87.5 * (position - 1)};
             case 1 -> new double[]{(((position % 10) - 1) * 87.5) + 185, 120};
             case 2 -> new double[]{970, (((position % 10) - 1) * 87.5) + 210};
@@ -122,5 +127,41 @@ public class Board {
                 yield new double[]{500, 500};
             }
         };
+    }
+
+    public class PositionFinder {
+        private static final double EDGE_OFFSET = 87.5;
+        private static final double CORNER_RADIUS = 50; // Pixel radius for corner detection
+
+        public static int getClosestPosition(double x, double y) {
+            // First check corners with proximity radius
+            if (isInCorner(x, y, 60, 1010)) return 0;
+            if (isInCorner(x, y, 55, 60)) return 10;
+            if (isInCorner(x, y, 1005, 70)) return 20;
+            if (isInCorner(x, y, 1005, 1010)) return 30;
+            // Then check edges
+            return getEdgePosition(x, y);
+        }
+
+        private static boolean isInCorner(double x, double y, double cornerX, double cornerY) {
+            return Math.abs(x - cornerX) < CORNER_RADIUS &&
+                    Math.abs(y - cornerY) < CORNER_RADIUS;
+        }
+
+        private static int getEdgePosition(double x, double y) {
+            // Left edge (positions 1-9)
+            if (x < 150) return (int) Math.round((1010 - y - 120) / EDGE_OFFSET) + 1;
+
+            // Top edge (positions 11-19)
+            if (y < 150) return (int) Math.round((x - 185) / EDGE_OFFSET) + 11;
+
+            // Right edge (positions 21-29)
+            if (x > 900) return (int) Math.round((y - 200) / EDGE_OFFSET) + 21;
+
+            // Bottom edge (positions 31-39)
+            if (y > 900) return (int) Math.round((880 - x) / EDGE_OFFSET) + 31;
+            // middle
+            return 40;
+        }
     }
 }
