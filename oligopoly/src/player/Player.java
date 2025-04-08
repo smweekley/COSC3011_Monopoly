@@ -113,7 +113,7 @@ public class Player {
 
     public void reduceMoney(int amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException("Can't remove a negative amount of money, use addMoney()");
+            throw new IllegalArgumentException("Can't reduce a negative amount of money, use addMoney()");
         }
         money -= amount;
         moneyProperty.set(money);
@@ -127,8 +127,14 @@ public class Player {
         moneyProperty.set(money);
     }
 
+    public void changeMoney(int amount) {
+		money += amount;
+        moneyProperty.set(money);
+    }
+
+
     public void movePosition(int moves) {
-        position = (position + moves)%20; // Change to amount of tiles
+        position = (position + moves)%40; // Change to amount of tiles
     }
 
     public void goToJail(int time) {
@@ -161,6 +167,9 @@ public class Player {
                 check += 1;
             }
         }
+        if (check > 2) {
+            throw new IllegalArgumentException("Player owns more than 2 utilities, something is broken.");
+        }
         return (check == 2);
     }
 
@@ -170,6 +179,9 @@ public class Player {
             if (property instanceof Railroad) {
                 count += 1;
             }
+        }
+        if (check > 4) {
+            throw new IllegalArgumentException("Player owns more than 4 railroads, something is broken.");
         }
         return count;
     }
