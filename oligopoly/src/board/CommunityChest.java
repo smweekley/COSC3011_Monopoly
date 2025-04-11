@@ -95,10 +95,12 @@ private void assest(player current) {
   moneyDeducted -= (current.houseCount() * 40);
   moneyDeducted -= (current.hotelCount() * 115);
   current.changeMoney(moneyDeducted);
+  image(primaryStage, ""File:src/board/communityChest/assest.jpg");
 }
 
 private void advanceToGo(player current) {
   current.changePosition(0);
+  image(primaryStage, ""File:src/board/communityChest/advanceToGo.jpg");
 }
 
 private void eachPlayerCollect(player current) {
@@ -108,49 +110,82 @@ private void eachPlayerCollect(player current) {
     numberPlayers[i].changeMoney(-50);
   }
   current.changeMoney(collected);
+  image(primaryStage, ""File:src/board/communityChest/eachPlayerCollect.jpg");
 }
 
 private void xMasFund(player current) {
   current.changeMoney(100);
+  image(primaryStage, ""File:src/board/communityChest/xMasFund.jpg");
 }
 
 private void taxRefund(player current) {
   current.changeMoney(20);
+  image(primaryStage, ""File:src/board/communityChest/taxRefund.jpg");
 }
 
 private void schoolTax(player current) {
   current.changeMoney(-150);
+  image(primaryStage, ""File:src/board/communityChest/schoolTax.jpg");
 }
 
 private void stockSale(player current) {
   current.changeMoney(45);
+  image(primaryStage, ""File:src/board/communityChest/stockSale.jpg");
 }
 
 private void bankError(player current) {
   current.changeMoney(200);
+  image(primaryStage, ""File:src/board/communityChest/bankError.jpg");
 }
 
 private void doctor(player current) {
   current.changeMoney(-50);
+  image(primaryStage, ""File:src/board/communityChest/doctor.jpg");
 }
 
 private void lifeInsurace(player current) {
   current.changeMoney(100);
+  image(primaryStage, ""File:src/board/communityChest/lifeInsurance.jpg");
 }
 
 private void hospitalBill(player current) {
   current.changeMoney(-100);
+  image(primaryStage, ""File:src/board/communityChest/hospitalBill.jpg");
 }
 
 private void marrage(player current) {
   current.changeMoney(25);
+  image(primaryStage, ""File:src/board/communityChest/marrage.jpg");
 }
 
 private void jail(player current) {
   current.inJail(true);
+  image(primaryStage, ""File:src/board/communityChest/jail.jpg");
 }
 
 private void inherit(player current) {
   current.changeMoney(100);
+  image(primaryStage, ""File:src/board/communityChest/inherit.jpg");
+}
+
+private image (stage primaryStage, String imagePath) {
+
+  Image cardPic = new Image(imagePath);
+  ImageView showImage = new ImageView(cardPic);
+
+  Button closeButton = new Button("ok");
+  closeButton.setOnAction(event -> primaryStage.close());
+
+  StackPane layout = new StackPane();
+  layout.getChrildren().addAll(imageView, closeButton);
+
+  StackPane.setAlignment(closeButton, javafx.geometry.pos.BOTTOM_CENTER);
+
+  Scene windowSize = new Scene(layout, 400, 300);
+
+  primaryStage.setTitle("Chance Card Drawn");
+  primaryStage.setScene(windowSize);
+
+  primaryStage.show();
 }
 */
