@@ -12,9 +12,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        File fxmlFile = new File("src/fxml/board.fxml");
+        File fxmlFile = new File("src/fxml/mainMenu.fxml");
         Pane root = FXMLLoader.load(fxmlFile.toURI().toURL());
-        primaryStage.setTitle("Oligopoly");
+        primaryStage.setTitle("Oligopoly Main Menu");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
