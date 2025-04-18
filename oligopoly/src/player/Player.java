@@ -41,14 +41,12 @@ public class Player {
         this.properties = new ArrayList<>();
     }
 
-    public Circle getTokenc() {
-        return tokenc;
-    }
+    public Circle getTokenc() { return tokenc;}
+
 
     public void setTokenc(String color) {
         //System.out.println("Setting token color to: " + color);
         this.tokenc = new Circle(10, Color.web(color.toLowerCase()));
-        this.color = color;
     }
 
     public int getNumber() {
@@ -213,7 +211,7 @@ public class Player {
     }
 
     public ObjectProperty<Circle> iconProperty() {
-        return new SimpleObjectProperty<>(tokenc);
+        return new SimpleObjectProperty<>(new Circle(10, Color.web(color.toLowerCase())));
     }
 
     public StringProperty nameProperty() {

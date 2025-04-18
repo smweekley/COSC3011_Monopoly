@@ -91,12 +91,8 @@ public class Controller {
             board.addPlayer(player);
             playersTable.getItems().add(player);
             playersTable.setMaxHeight(playersTable.getMaxHeight() + 25);
-        }
-        for (Player player : board.getPlayers()) {
             board.movePlayerToPosition(player, 0); // Initial position
-            System.out.println(player.getPosition());
         }
-        updateTokenPositions();
     }
 
     private void updateTokenPositions() {
