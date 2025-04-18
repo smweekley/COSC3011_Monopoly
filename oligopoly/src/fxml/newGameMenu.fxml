@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="newGameMenu" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.NewGameController" spacing="10" alignment="CENTER">
+    <Slider fx:id="playerSlider" min="2" max="8" value="1" majorTickUnit="1" blockIncrement="1" snapToTicks="true" showTickLabels="true" showTickMarks="true"/>
+    <TableView fx:id="playerTable" prefHeight="400" prefWidth="400">
+        <columns>
+            <TableColumn text="Player Number" fx:id="playerNumberColumn"/>
+            <TableColumn text="Name" fx:id="nameColumn"/>
+            <TableColumn text="Color" fx:id="colorColumn"/>
+        </columns>
+    </TableView>
+    <TextField fx:id="nameInput" promptText="Enter player name"/>
+    <ComboBox fx:id="colorComboBox" promptText="Select color"/>
+    <Button text="Update Player" onAction="#updatePlayer"/>
+    <Button text="Start Game" onAction="#startGame"/>
+    <Button text="Back" onAction="#back"/>
+</VBox>

@@ -12,11 +12,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import state.GameState;
 import state.StateManager;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.util.ArrayList;
 
 public class Controller {
 
@@ -36,9 +36,9 @@ public class Controller {
     @FXML private TableColumn<Player, Boolean> itemsColumn;
     @FXML private Text clickedOnText;
 
-
+    @FXML
     public void initialize() {
-
+        //System.out.println("Initializing board...");
         // Set up scaling
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
@@ -77,23 +77,6 @@ public class Controller {
             }
         });
 
-        //make the players
-        javafx.scene.paint.Color[] colors = {javafx.scene.paint.Color.BLACK,javafx.scene.paint.Color.BLUE,javafx.scene.paint.Color.GREEN};
-        int players = 3;    // change to change number of players
-
-        //in the future may be best moved and rewritten when players can select their own icons/import them from file
-        //see Board.java line 37
-        for (int i = 0; i < players; i++) {
-            Player player = new Player(colors[i]);
-            boardPane.getChildren().add(player.getTokenc());
-            board.addPlayer(player);
-            playersTable.getItems().add(player);
-            playersTable.setMaxHeight(playersTable.getMaxHeight() + 25);
-        }
-        for (Player p : board.getPlayers()) {
-            board.movePlayerToPosition(p, 0); // Initial position
-        }
-
         //Auto scale
         ChangeListener<Number> resizeListener = (obs, oldVal, newVal)
                 -> updateTokenPositions();
@@ -101,11 +84,27 @@ public class Controller {
         boardPane.heightProperty().addListener(resizeListener);
     }
 
+    public void initializePlayers(ArrayList<Player> players) {
+        //System.out.println("Initializing players...");
+        for (Player player : players) {
+            boardPane.getChildren().add(player.getTokenc());
+            board.addPlayer(player);
+            playersTable.getItems().add(player);
+            playersTable.setMaxHeight(playersTable.getMaxHeight() + 25);
+        }
+        for (Player player : board.getPlayers()) {
+            board.movePlayerToPosition(player, 0); // Initial position
+            System.out.println(player.getPosition());
+        }
+        updateTokenPositions();
+    }
+
     private void updateTokenPositions() {
         for (Player p : board.getPlayers()) {
-            board.movePlayerToPosition(p, p.getCurrentPosition());
+            board.movePlayerToPosition(p, p.getPosition());
         }
     }
+
     @FXML
     private void handleImageClick(MouseEvent event) {
         double imageViewWidth = imageView.getBoundsInLocal().getWidth();
@@ -152,19 +151,31 @@ public class Controller {
     @FXML
     private void saveGame() {
         System.out.println("Saving game...");
-        GameState state = new GameState(board);
-        StateManager.saveGame(state, "test1.ser"); // Use a file extension
+        StateManager.saveGame(this.board, "test1.csv");
     }
+
     @FXML
     private void loadGame() {
-        System.out.println("Loading game...");
-        GameState loadedState = StateManager.loadGame("test1.ser");
-        if (loadedState != null) {
-            board = loadedState.getBoard();
-            // Update the UI or game logic with the loaded board state
-            System.out.println("Game loaded successfully.");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Game File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Files", "*.ser"));
+
+        File defaultDirectory = new File("saves");
+        if (defaultDirectory.exists()) {
+            fileChooser.setInitialDirectory(defaultDirectory);
         } else {
-            System.out.println("Failed to load game.");
+            // Fallback to home dir if saves doesn't exist
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(loadGame.getScene().getWindow());
+        if (selectedFile != null) {
+            System.out.println("Loading game from: " + selectedFile.getAbsolutePath());
+            Board newBoard = StateManager.loadGame(selectedFile.getAbsolutePath());
+            this.board = newBoard;
+            updateTokenPositions();
+        } else {
+            System.out.println("File selection cancelled.");
         }
     }
 }

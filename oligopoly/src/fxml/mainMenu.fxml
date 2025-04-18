@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="mainMenu" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.MainMenuController" spacing="10" alignment="CENTER">
+    <Button text="New Game" onAction="#newGame"/>
+    <Button text="Load Game" onAction="#loadGame"/>
+    <Button text="Exit" onAction="#exit"/>
+</VBox>
