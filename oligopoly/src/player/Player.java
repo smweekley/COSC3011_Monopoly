@@ -1,162 +1,163 @@
 package player;
 
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.scene.shape.Circle;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
-//-------------------------------
-import java.util.ArrayList;
-import java.util.Random;
+import javafx.scene.shape.Circle;
 import tile.Property;
 import tile.Railroad;
 import tile.Tile;
 import tile.Utility;
 
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Player {
-    private final Circle tokenc;
-    private int currentPosition;
+    private Circle tokenc;
+    private int number;
+    private String color;
+    private String name;
+    private int money;
+    private ArrayList<Tile> properties;
+    private int position;
+    private boolean inJail;
+    private int timeInJail;
 
-
-    public Player(Color color) {
-        tokenc = new Circle(10, color);
-        this.iconProperty = new SimpleObjectProperty<>(new Circle(10, color));
-        this.nameProperty = new SimpleStringProperty(color.toString());
-        this.moneyProperty = new SimpleIntegerProperty(1500);
-        this.hasGetOutOfJailProperty = new SimpleBooleanProperty(false);
+    public Player(int number, String name, String color) {
+        setTokenc(color);
+        this.number = number;
+        this.color = color;
+        this.name = name;
+        this.money = 1500;
+        this.position = 0;
+        this.inJail = false;
+        this.timeInJail = 0;
+        this.properties = new ArrayList<>();
     }
 
     public Circle getTokenc() {
         return tokenc;
     }
 
-    public int getCurrentPosition() {
-        return currentPosition;
+    public void setTokenc(String color) {
+        //System.out.println("Setting token color to: " + color);
+        this.tokenc = new Circle(10, Color.web(color.toLowerCase()));
+        this.color = color;
     }
 
-    public void setCurrentPosition(int position) {
-        this.currentPosition = position;
+    public int getNumber() {
+        return number;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+        this.tokenc = new Circle(10, Color.web(color));
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    // for the table to dynamically update you need to keep these properties updated
-    // Properties
-    private final ObjectProperty<Circle> iconProperty;
-    private final StringProperty nameProperty;
-    private final IntegerProperty moneyProperty;
-    private final BooleanProperty hasGetOutOfJailProperty;
-
-    // Property Getters
-    public ObjectProperty<Circle> iconProperty() { return iconProperty; }
-    public StringProperty nameProperty() { return nameProperty; }
-    public IntegerProperty moneyProperty() { return moneyProperty; }
-    public BooleanProperty hasItemsProperty() { return hasGetOutOfJailProperty; }
-
-
-
-    //----------------------------------------------------------------------------------------
-
-
-    private String name;
-    private int money;
-    private ArrayList<Tile> properties;
-    //private ArrayList<Card> cards;
-    private int position;
-    private String token;
-    private boolean inJail;
-    private int timeInJail;
-
-    public Player(Circle tokenc, ObjectProperty<Circle> iconProperty, StringProperty nameProperty, IntegerProperty moneyProperty, BooleanProperty hasGetOutOfJailProperty, String name, int money, String token) {
-        this.tokenc = tokenc;
-        this.iconProperty = iconProperty;
-        this.nameProperty = nameProperty;
-        this.moneyProperty = moneyProperty;
-        this.hasGetOutOfJailProperty = hasGetOutOfJailProperty;
-        this.name = name;
-        this.money = money;
-        this.token = token;
-        position = 0;
-        inJail = false;
-        timeInJail = 0;
-        properties = new ArrayList<>();
+    public int getMoney() {
+        return money;
     }
 
-    public String getName() {return name;}
+    public void setMoney(int amount) {
+        this.money = amount;
+    }
 
-    public int getMoney() {return money;}
-
-    public ArrayList<Tile> getProperties() {return properties;}
+    public ArrayList<Tile> getProperties() {
+        return properties;
+    }
 
     public String getPropertiesString() {
         StringBuilder propertyString = new StringBuilder();
-
+        if (properties == null) {
+            return "";
+        }
         for (int i = 0; i < properties.size(); i++) {
             propertyString.append(properties.get(i).getName());
             if (i < properties.size() - 1) {
                 propertyString.append(", ");
             }
         }
-
         return propertyString.toString();
     }
 
-    public int getPosition() {return position;}
+    public int getPosition() {
+        return position;
+    }
 
-    public String getToken() {return token;}
+    public void setPosition(int pos) {
+        this.position = pos;
+    }
 
-    public boolean isJailed() {return inJail;}
+    public boolean isJailed() {
+        return inJail;
+    }
 
-    public int jailTime() {return timeInJail;}
+    public int jailTime() {
+        return timeInJail;
+    }
+
+    public void setJailTime(int time) {
+        this.timeInJail = time;
+    }
 
     public void reduceMoney(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Can't reduce a negative amount of money, use addMoney()");
         }
-        money -= amount;
-        moneyProperty.set(money);
+        this.money -= amount;
     }
 
     public void addMoney(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Can't add a negative amount of money, use reduceMoney()");
         }
-		money += amount;
-        moneyProperty.set(money);
+        this.money += amount;
     }
 
     public void changeMoney(int amount) {
-		money += amount;
-        moneyProperty.set(money);
+        this.money += amount;
     }
 
-
     public void movePosition(int moves) {
-        position = (position + moves)%40; // Change to amount of tiles
+        this.position = (this.position + moves) % 40;
     }
 
     public void goToJail(int time) {
-        inJail = true;
-        timeInJail = time;
-        position = 10000; // !!! change for jail position !!!
+        this.inJail = true;
+        this.timeInJail = time;
+        this.position = 10000;
     }
 
     public void releaseFromJail() {
-        inJail = false;
-        timeInJail = 0;
+        this.inJail = false;
+        this.timeInJail = 0;
     }
 
     public int roll(int numDice) {
         if (numDice > 2 || numDice < 1) {
-            throw new IllegalArgumentException("Only row 1 or 2 dice.");
+            throw new IllegalArgumentException("Only roll 1 or 2 dice.");
         }
         Random random = new Random();
-
         int roll1 = random.nextInt(6) + 1;
         int roll2 = random.nextInt(6) + 1;
-
         return (numDice == 1) ? roll1 : (roll1 + roll2);
     }
 
@@ -180,7 +181,7 @@ public class Player {
                 count += 1;
             }
         }
-        if (check > 4) {
+        if (count > 4) {
             throw new IllegalArgumentException("Player owns more than 4 railroads, something is broken.");
         }
         return count;
@@ -190,7 +191,7 @@ public class Player {
         int count = 0;
         for (Tile property : properties) {
             if (property instanceof Property) {
-                int houseCount = ((Property) property).getHouseCount(); // Only add to count if it's less than 5 (i.e., not a hotel)
+                int houseCount = ((Property) property).getHouseCount();
                 if (houseCount < 5) {
                     count += houseCount;
                 }
@@ -203,11 +204,27 @@ public class Player {
         int count = 0;
         for (Tile property : properties) {
             if (property instanceof Property) {
-                if (((Property) property).getHouseCount() == 5) { // A count of 5 is a hotel
+                if (((Property) property).getHouseCount() == 5) {
                     count++;
                 }
             }
         }
         return count;
+    }
+
+    public ObjectProperty<Circle> iconProperty() {
+        return new SimpleObjectProperty<>(tokenc);
+    }
+
+    public StringProperty nameProperty() {
+        return new SimpleStringProperty(name);
+    }
+
+    public IntegerProperty moneyProperty() {
+        return new SimpleIntegerProperty(money);
+    }
+
+    public BooleanProperty hasItemsProperty() {
+        return new SimpleBooleanProperty(inJail);
     }
 }
