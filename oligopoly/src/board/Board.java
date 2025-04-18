@@ -28,6 +28,10 @@ public class Board {
         players.add(player);
     }
 
+    public void addPlayers(ArrayList<Player> players) {
+        this.players = players;
+    }
+
     public void removePlayer(Player player) {
         players.add(player);
     }
@@ -92,12 +96,12 @@ public class Board {
         // Set token position
         token.setLayoutX(tokenX);
         token.setLayoutY(tokenY);
-        player.setCurrentPosition(position);
+        player.setPosition(position);
     }
 
     // relitve move (move player x, y spaces)
     public void relativeMove(Player player, int spaces) {
-        int newPosition = (player.getCurrentPosition() + spaces) % 40;
+        int newPosition = (player.getPosition() + spaces) % 40;
         movePlayerToPosition(player, newPosition);
     }
 
