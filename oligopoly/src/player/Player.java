@@ -78,6 +78,14 @@ public class Player {
         this.money = amount;
     }
 
+    public ArrayList<Tile> addProperty(Tile property) {
+        this.properties.add(property);
+    }
+
+    public ArrayList<Tile> removeProperty(Tile property) {
+        this.properties.remove(property);
+    }
+
     public ArrayList<Tile> getProperties() {
         return properties;
     }
