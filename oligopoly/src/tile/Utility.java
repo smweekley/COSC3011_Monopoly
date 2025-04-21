@@ -1,14 +1,21 @@
 package tile;
 
+import java.util.ArrayList;
+
 import player.Player;
 
 public class Utility extends Tile{
     private final int buyCost;
     private Player owner;
+    private boolean isOwned;
+    private int mortgageValue;
+    private boolean isMortgaged;
 
     public Utility(int buyCost, String name) {
         this.buyCost = buyCost;
+        this.mortgageValue = (int) (buyCost / 2);
         this.name = name;
+        this.isMortgaged = false;
         owner = null;
     }
 
@@ -37,15 +44,41 @@ public class Utility extends Tile{
     public String getName() {
         return name;
     }
-    
-    public void buy(Player player) {
-        if (owner == null) {
-            return; // already owned, ask for trade?
+
+    public ArrayList<String> getTileInfo() {
+        ArrayList<String> temp = new ArrayList<String>();
+        int utilitiesOwned = 0;
+        int unmortgageCost = (int) (mortgageValue * 1.10);
+
+        StringBuilder propSummary = new StringBuilder();
+        if (this.isOwned) {
+            ArrayList<Tile> properties = owner.getProperties();
+            for (Tile prop : properties) {
+                if (prop instanceof Utility) {
+                    Utility utilityTileTemp = (Utility) prop;
+                    if (utilityTileTemp.getOwner() == this.getOwner() && utilityTileTemp != this) {
+                        utilitiesOwned++;
+                        propSummary.append(prop.getName() + ". ");
+                    }
+                }
+            }
         }
-        if (player.getMoney() < buyCost) {
-            return; // ah hell naw you broke
+        temp.add("Tile Type: Utility");
+        temp.add("Tile Name: " + this.getName());
+
+        if (this.isOwned) {
+            temp.add("Property Owner: " + this.owner.getName());
+        } else {
+            temp.add("Property Owner: Not Owned");
         }
-        owner = player;
-        player.reduceMoney(buyCost);
+
+        temp.add("Rent: Depends on dice roll.");
+        temp.add("Mortgaged: " + Boolean.toString(this.isMortgaged));
+        temp.add("Cost to Lift Mortgage: $" + unmortgageCost);
+        if (this.isOwned && utilitiesOwned > 0) {
+            temp.add("Property Owner Also Owns: " + propSummary);
+        }
+
+        return temp;
     }
 }
