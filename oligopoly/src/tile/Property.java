@@ -12,8 +12,8 @@ public class Property extends Tile{
     private enum Colors { BROWN, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE};
     private Colors propertyColor;
     private Player propertyOwner;
-    private final int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
-    private final int purchasePrice;
+    private int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
+    private int purchasePrice;
     private int houseCount;
     private int hotelCount;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
