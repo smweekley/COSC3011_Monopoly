@@ -33,7 +33,7 @@ public class Board {
     }
 
     public void removePlayer(Player player) {
-        players.add(player);
+        players.remove(player);
     }
 
     public ArrayList<Player> getPlayers() {
