@@ -183,7 +183,7 @@ public class Controller {
             }else{
                 mortgage.setText("Mortgage");
             }
-            Property.Colors[] colors =  Property.Colors.values();
+            Tile.Colors[] colors =  Tile.Colors.values();
             for (int i = 0; i < colors.length; i++){
                 if (input.get(5) == colors[i].toString()){
                     Image image = new Image("fxml/propImg/" + i + ".png");
@@ -385,7 +385,7 @@ public class Controller {
     private void updatePositionInfo(ArrayList<String> input ){
     // update position display
         if(input.getFirst() == "Property"){
-            Property.Colors[] colors =  Property.Colors.values();
+            Tile.Colors[] colors =  Tile.Colors.values();
             for (int i = 0; i < colors.length; i++){
                 if (input.get(5) == colors[i].toString()){
                     Image image = new Image("/fxml/propImg/" + i + ".png");

@@ -47,13 +47,13 @@ public class Board {
     // used for testing land on / click on not final at all
     // plz make a real version of this
     public void initBoard(){
-        Property.Colors[] colors =  Property.Colors.values();
+        Tile.Colors[] colors =  Tile.Colors.values();
         for (int i = 0; i < 41; i++){
             int price = (i*1000);
             int[] rents = {10, 100, 500, 1000, 1500, 2000};
             int house = (i*100);
             for (int j = 0; j < rents.length; j++){ rents[j] = rents[j]*i; }
-            Property.Colors color = colors[i/6];
+            Tile.Colors color = colors[i/6];
             if ( i == 1 ){
                 Tile nextTile = new Go(20);
                 tiles.add(nextTile);

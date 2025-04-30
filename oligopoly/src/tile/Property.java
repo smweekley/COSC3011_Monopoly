@@ -6,10 +6,19 @@ package tile;
 import player.Player;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
 import java.util.Collections;
 
 public class Property extends Tile{
-    public enum Colors { BROWN, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE};
+
     private Colors propertyColor;
     private Player propertyOwner;
     private int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
@@ -191,15 +200,46 @@ public class Property extends Tile{
     // Land On Logic
     public void landOn(Player player) {
         if (!isOwned()) {
-            System.out.println(player.getName() + " can buy " + name + " for $" + purchasePrice);
-            // GUI stuff to prompt player for actions
+            showPurchasePopup(player);
         } else if (propertyOwner != player) {
             payRent(player);
         } else {
             System.out.println(player.getName() + " landed on their own property.");
-
+            // Optional: Offer to build houses here or defer to player turn menu
         }
     }
+
+    //////////////// Purchase tile test method ////////////////
+    private void showPurchasePopup(Player player) {
+    Stage popup = new Stage();
+    popup.initModality(Modality.APPLICATION_MODAL);
+    popup.setTitle("Buy Property");
+
+    Label label = new Label(player.getName() + ", would you like to buy " + name + " for $" + purchasePrice + "?");
+
+    Button buyButton = new Button("Buy");
+    Button passButton = new Button("Pass");
+
+    buyButton.setOnAction(e -> {
+        boolean success = buyProperty(player);
+        if (!success) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You can't afford this property.");
+            alert.showAndWait();
+        }
+        popup.close();
+    });
+
+    passButton.setOnAction(e -> {
+        popup.close();
+    });
+
+    VBox layout = new VBox(10, label, buyButton, passButton);
+    layout.setStyle("-fx-padding: 20;");
+    popup.setScene(new Scene(layout, 300, 150));
+    popup.showAndWait();
+}
+
+    
 
     /*
     Returns ArrayList of strings
@@ -224,7 +264,7 @@ public class Property extends Tile{
         if (isOwned()){
             info.add(propertyOwner.getName());
         } else {
-            info.add("Bank");
+            info.add("Not Owned");
         }
 
         info.add(Integer.toString(getRent()));
