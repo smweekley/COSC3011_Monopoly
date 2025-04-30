@@ -145,26 +145,60 @@ public class Controller {
         }
         board.relativeMove(board.getPlayers().get(player),spaces);
     }
-	    @FXML
+    // it might make sense to move some/all of roll() and endTurn() to board or something
+
+    @FXML
     private void roll() {
-        Random random = new Random();
-        int die1 = random.nextInt(6 - 1 + 1) + 1;
-        int die2 = random.nextInt(6 - 1 + 1) + 1;
-        updateRoll(die1, die2);
-        board.relativeMove(board.getPlayers().getFirst(),die1+die2);
+        int state = 0;
+        Player currentPlayer = board.getPlayers().getFirst();
+        if (currentPlayer.getRolls() > 0){
+            Random random = new Random();
+            int die1 = random.nextInt(6 - 1 + 1) + 1;
+            int die2 = random.nextInt(6 - 1 + 1) + 1;
+            if (die1 == die2){
+                // get out of jail
+                state = 1;
+                if (currentPlayer.getDubs() == 2){
+                    currentPlayer.setDubs(0);
+                    // go to jail state 3 ?
+                    return;
+                }
+                currentPlayer.setDubs(currentPlayer.getDubs()+1);
+            }
+            updateRoll(die1, die2, state);
+            board.relativeMove(board.getPlayers().getFirst(),die1+die2);
+            currentPlayer.setRolls(currentPlayer.getRolls()-(1-state));
+        }else{
+            updateRoll(0, 0, 2);
+        }
     }
+
     @FXML
     private void endTurn() {
         ArrayList<Player> list = board.getPlayers();
         Player currentPlayer = list.removeFirst();
+        currentPlayer.setRolls(currentPlayer.getRolls()+1);
         list.add(currentPlayer);
+        currentPlayer.setDubs(0);
+        // countdown jail sentence
     }
 
-
     @FXML
-    private void updateRoll(int die1, int die2) {
+    private void updateRoll(int die1, int die2,int state) {
         int roll = die1 + die2;
-        rolledText.setText("You Rolled a " + die1 + " and a " + die2 + ", " + roll + " total.");
+        switch (state){
+            case 0:// normal
+                rolledText.setText("You Rolled a " + die1 + " and a " + die2 + ", " +
+                        roll + " total.");
+                return;
+            case 1:// doubles
+                rolledText.setText("You Rolled a " + die1 + " and a " + die2 + ", " +
+                        roll + " total. " + "\nThat's doubles so you can roll again.");
+                return;
+            case 2:// no more
+                rolledText.setText("Can't roll no more rolls left. End turn for more.");
+        }
+
     }
 
     @FXML

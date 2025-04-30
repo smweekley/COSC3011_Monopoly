@@ -28,6 +28,8 @@ public class Player {
     private int position;
     private boolean inJail;
     private int timeInJail;
+    private int rolls;
+    private int dubs;
 
     public Player(int number, String name, String color) {
         setTokenc(color);
@@ -39,9 +41,19 @@ public class Player {
         this.inJail = false;
         this.timeInJail = 0;
         this.properties = new ArrayList<>();
+        this.rolls = 1;
+        this.dubs = 0;
     }
 
     public Circle getTokenc() { return tokenc;}
+
+    public int getRolls(){return rolls;}
+
+    public void setRolls(int rolls){this.rolls = rolls;}
+
+    public int getDubs(){return dubs;}
+
+    public void setDubs(int dubs){this.dubs = dubs;}
 
 
     public void setTokenc(String color) {
