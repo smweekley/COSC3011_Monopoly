@@ -21,7 +21,7 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <TableView fx:id="playersTable" maxHeight="53.0">
+                        <TableView fx:id="playersTable" maxHeight="-1">
                            <columns>
                               <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Players">
                                  <columns>
@@ -72,8 +72,8 @@
                         </VBox>
                         <VBox>
                            <children>
-                              <Button fx:id="loadGame" mnemonicParsing="false" onAction="#loadGame" prefWidth="80.0" text="Load Game" />
-                              <Button fx:id="saveGame" mnemonicParsing="false" onAction="#saveGame" prefWidth="80.0" text="Save Game" />
+                              <Button fx:id="loadGameButton" mnemonicParsing="false" onAction="#loadGame" prefWidth="80.0" text="Load Game" />
+                              <Button fx:id="saveGameButton" mnemonicParsing="false" onAction="#saveGame" prefWidth="80.0" text="Save Game" />
                            </children>
                         </VBox>
                      </children>

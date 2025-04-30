@@ -27,8 +27,8 @@ public class Controller {
     @FXML private TextField relativeIn;
     @FXML private TextField absoluteIn;
     @FXML private TextField playerIn;
-    @FXML private Button saveGame;
-    @FXML private Button loadGame;
+    @FXML private Button saveGameButton;
+    @FXML private Button loadGameButton;
     @FXML private TableView playersTable;
     @FXML private TableColumn<Player, Circle> iconColumn;
     @FXML private TableColumn<Player, String> nameColumn;
@@ -85,14 +85,25 @@ public class Controller {
     }
 
     public void initializePlayers(ArrayList<Player> players) {
-        //System.out.println("Initializing players...");
-        for (Player player : players) {
-            boardPane.getChildren().add(player.getTokenc());
-            board.addPlayer(player);
-            playersTable.getItems().add(player);
-            playersTable.setMaxHeight(playersTable.getMaxHeight() + 25);
-            board.movePlayerToPosition(player, 0); // Initial position
+        boardPane.getChildren().retainAll(imageView);
+        playersTable.setFixedCellSize(25);
+
+        ArrayList<Player> currentPlayers = new ArrayList<>(board.getPlayers());
+        for (Player player : currentPlayers) {
+            board.removePlayer(player);
         }
+
+        playersTable.getItems().clear();
+
+        for (Player player : players) {
+            board.addPlayer(player);
+            boardPane.getChildren().add(player.getTokenc());
+            playersTable.getItems().add(player);
+            board.movePlayerToPosition(player, player.getPosition());
+        }
+
+        int headerHeight = 50;
+        playersTable.setMaxHeight(playersTable.getItems().size() * playersTable.getFixedCellSize() + headerHeight);
     }
 
     private void updateTokenPositions() {
@@ -146,15 +157,35 @@ public class Controller {
     // Save and load game buttons
     @FXML
     private void saveGame() {
-        System.out.println("Saving game...");
-        StateManager.saveGame(this.board, "test1.csv");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Game File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+
+        File defaultDirectory = new File("saves");
+        if (defaultDirectory.exists()) {
+            fileChooser.setInitialDirectory(defaultDirectory);
+        } else {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        }
+
+        File selectedFile = fileChooser.showSaveDialog(saveGameButton.getScene().getWindow());
+        if (selectedFile != null) {
+            String chosenPath = selectedFile.getAbsolutePath();
+            if (!chosenPath.toLowerCase().endsWith(".xml")) {
+                chosenPath += ".xml";
+            }
+            System.out.println("Saving game to: " + chosenPath);
+            StateManager.saveGame(board, chosenPath);
+        } else {
+            System.out.println("Save cancelled.");
+        }
     }
 
     @FXML
     private void loadGame() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Game File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Serialized Files", "*.ser"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
 
         File defaultDirectory = new File("saves");
         if (defaultDirectory.exists()) {
@@ -164,11 +195,12 @@ public class Controller {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         }
 
-        File selectedFile = fileChooser.showOpenDialog(loadGame.getScene().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(loadGameButton.getScene().getWindow());
         if (selectedFile != null) {
             System.out.println("Loading game from: " + selectedFile.getAbsolutePath());
-            Board newBoard = StateManager.loadGame(selectedFile.getAbsolutePath());
-            this.board = newBoard;
+            ArrayList<Player> players = StateManager.loadGame(selectedFile.getAbsolutePath());
+            this.board = new Board(imageView);
+            initializePlayers(players);
             updateTokenPositions();
         } else {
             System.out.println("File selection cancelled.");
