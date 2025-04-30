@@ -1,4 +1,6 @@
-name: Remove Bin Directory in Oligopoly
+# .github/workflows/remove-bin-directory.yml
+
+name: Remove Bin Directory in Oligopoly and Commit
 
 on:
   push:
@@ -14,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # Needed to push
 
       - name: Check and Remove 'bin' directory inside 'oligopoly'
         run: |
@@ -24,7 +28,15 @@ jobs:
             echo "No 'bin' directory found. Nothing to delete."
           fi
 
-      - name: Show current directory tree for verification
+      - name: Commit and Push changes if needed
         run: |
-          echo "Directory structure after deletion (if any):"
-          tree oligopoly || ls -R oligopoly
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            echo "Committing changes..."
+            git commit -m "Remove bin directory from oligopoly [automated]"
+            git push
+          fi
