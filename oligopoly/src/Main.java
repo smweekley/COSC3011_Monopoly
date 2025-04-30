@@ -3,7 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import fxml.PopupManager;
 import java.io.File;
 
 import board.Board;
@@ -17,6 +17,7 @@ public class Main extends Application {
         primaryStage.setTitle("Oligopoly Main Menu");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        PopupManager.getInstance().initialize(primaryStage);
     }
 
     public static void main(String[] args) {

@@ -18,6 +18,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+import fxml.PopupManager;
 
 public class Controller {
 
@@ -145,22 +146,27 @@ public class Controller {
         }
         board.relativeMove(board.getPlayers().get(player),spaces);
     }
-    // it might make sense to move some/all of roll() and endTurn() to board or something
+
+    // it might make sense to move some/all of roll() and endTurn() to board
 
     @FXML
     private void roll() {
-        int state = 0;
+        // checks if current player can roll dice if so rolls 2 random numbers
+        // moves them there and updates the text and makes a popup
+        //  to-do: call land $200 for go on maybe move to board
+        int state = 0;      // type of roll normal, dubs etc
         Player currentPlayer = board.getPlayers().getFirst();
         if (currentPlayer.getRolls() > 0){
             Random random = new Random();
             int die1 = random.nextInt(6 - 1 + 1) + 1;
             int die2 = random.nextInt(6 - 1 + 1) + 1;
             if (die1 == die2){
-                // get out of jail
+                // get out of jail state 4 ?
                 state = 1;
                 if (currentPlayer.getDubs() == 2){
+                    // 3rd time rolling dubs
                     currentPlayer.setDubs(0);
-                    // go to jail state 3 ?
+                    PopupManager.showPopup("You rolled 3 doubles in a row go to jail." );
                     return;
                 }
                 currentPlayer.setDubs(currentPlayer.getDubs()+1);
@@ -168,6 +174,7 @@ public class Controller {
             updateRoll(die1, die2, state);
             board.relativeMove(board.getPlayers().getFirst(),die1+die2);
             currentPlayer.setRolls(currentPlayer.getRolls()-(1-state));
+            PopupManager.showPopup("You landed on " + currentPlayer.getPosition());
         }else{
             updateRoll(0, 0, 2);
         }
@@ -175,6 +182,8 @@ public class Controller {
 
     @FXML
     private void endTurn() {
+        // passes play to next player
+        //  to-do: countdown jail sentence maybe move to board
         ArrayList<Player> list = board.getPlayers();
         Player currentPlayer = list.removeFirst();
         currentPlayer.setRolls(currentPlayer.getRolls()+1);
@@ -198,7 +207,6 @@ public class Controller {
             case 2:// no more
                 rolledText.setText("Can't roll no more rolls left. End turn for more.");
         }
-
     }
 
     @FXML
