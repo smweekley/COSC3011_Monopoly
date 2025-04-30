@@ -1,0 +1,30 @@
+name: Remove Bin Directory in Oligopoly
+
+on:
+  push:
+    paths:
+      - 'oligopoly/**'
+  pull_request:
+    paths:
+      - 'oligopoly/**'
+
+jobs:
+  remove-bin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check and Remove 'bin' directory inside 'oligopoly'
+        run: |
+          if [ -d "oligopoly/bin" ]; then
+            echo "'bin' directory found inside 'oligopoly'. Deleting..."
+            rm -rf oligopoly/bin
+          else
+            echo "No 'bin' directory found. Nothing to delete."
+          fi
+
+      - name: Show current directory tree for verification
+        run: |
+          echo "Directory structure after deletion (if any):"
+          tree oligopoly || ls -R oligopoly
