@@ -29,13 +29,16 @@ public class StateManager {
 
     public static void saveGame(Board board, String fileName) {
         try {
-            File saveDir = new File(SAVE_DIRECTORY);
-            if (!saveDir.exists()) {
-                saveDir.mkdirs();
+            File file;
+            if (new File(fileName).isAbsolute()) {
+                file = new File(fileName);
+            } else {
+                File saveDir = new File(SAVE_DIRECTORY);
+                if (!saveDir.exists()) {
+                    saveDir.mkdirs();
+                }
+                file = new File(saveDir, fileName);
             }
-
-            // Create the full file path
-            File file = new File(saveDir, fileName);
 
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -54,6 +57,8 @@ public class StateManager {
                 playerElement.setAttribute("jailed", String.valueOf(player.isJailed()));
                 playerElement.setAttribute("timeInJail", String.valueOf(player.jailTime()));
                 playerElement.setAttribute("properties", String.valueOf(player.getPropertiesString()));
+                playerElement.setAttribute("color", String.valueOf(player.getColor()));
+                playerElement.setAttribute("number", String.valueOf(player.getNumber()));
                 // also need to track cards somehow with plaintext
                 rootElement.appendChild(playerElement);
             }
@@ -74,50 +79,50 @@ public class StateManager {
         }
     }
 
-    public static Board loadGame(String filePath) {
-        return null;
-        /*
-        Board board = new Board();
+    public static ArrayList<Player> loadGame(String filePath) {
         try {
             File file = new File(filePath);
-
+            
+            ArrayList<Player> players = new ArrayList<>();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(file);
             doc.getDocumentElement().normalize();
-
+    
             NodeList playerList = doc.getElementsByTagName("Player");
             for (int i = 0; i < playerList.getLength(); i++) {
                 Node playerNode = playerList.item(i);
                 if (playerNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element playerElement = (Element) playerNode;
-
-                    // Extract player attributes
+    
                     String name = playerElement.getAttribute("name");
                     int position = Integer.parseInt(playerElement.getAttribute("position"));
                     int money = Integer.parseInt(playerElement.getAttribute("money"));
                     boolean inJail = Boolean.parseBoolean(playerElement.getAttribute("jailed"));
                     int timeInJail = Integer.parseInt(playerElement.getAttribute("timeInJail"));
+                    String propertiesString = playerElement.getAttribute("properties");
+                    String color = playerElement.getAttribute("color");
+                    int number = Integer.parseInt(playerElement.getAttribute("number"));
 
-                    // Create a new Player object
-                    Player player = new Player();
-                    player.moveToPosition(position);
+                    Player player = new Player(number, name, color);
+                    player.setName(name);
+                    player.setPosition(position);
+                    player.setMoney(money);
+                    player.setNumber(number);
                     if (inJail) {
                         player.goToJail(timeInJail);
                     } else {
                         player.setJailTime(timeInJail);
                     }
-                    player.setName(name);
-                    player.setMoney(money);
-
-                    // Add the player to the board
-                    board.addPlayer(player);
+                    player.setColor(color);
+                    //player.setPropertiesFromString(propertiesString);
+                    players.add(player);
                 }
             }
+            return players;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return board;
-    */
+        return new ArrayList<>();
     }
 }
