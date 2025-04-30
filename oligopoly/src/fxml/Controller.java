@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Controller {
 
@@ -35,6 +36,10 @@ public class Controller {
     @FXML private TableColumn<Player, Integer> moneyColumn;
     @FXML private TableColumn<Player, Boolean> itemsColumn;
     @FXML private Text clickedOnText;
+	
+	@FXML private Button roll;
+    @FXML private Button endTurn;
+    @FXML private Text rolledText;
 
     @FXML
     public void initialize() {
@@ -139,6 +144,27 @@ public class Controller {
             System.out.println("bad relative move");
         }
         board.relativeMove(board.getPlayers().get(player),spaces);
+    }
+	    @FXML
+    private void roll() {
+        Random random = new Random();
+        int die1 = random.nextInt(6 - 1 + 1) + 1;
+        int die2 = random.nextInt(6 - 1 + 1) + 1;
+        updateRoll(die1, die2);
+        board.relativeMove(board.getPlayers().getFirst(),die1+die2);
+    }
+    @FXML
+    private void endTurn() {
+        ArrayList<Player> list = board.getPlayers();
+        Player currentPlayer = list.removeFirst();
+        list.add(currentPlayer);
+    }
+
+
+    @FXML
+    private void updateRoll(int die1, int die2) {
+        int roll = die1 + die2;
+        rolledText.setText("You Rolled a " + die1 + " and a " + die2 + ", " + roll + " total.");
     }
 
     @FXML

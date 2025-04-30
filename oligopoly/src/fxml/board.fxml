@@ -51,6 +51,28 @@
             </Pane>
             <TilePane alignment="CENTER" prefWidth="0.0" HBox.hgrow="NEVER">
                <children>
+                <TilePane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Button fx:id="roll" mnemonicParsing="false" onAction="#roll" prefWidth="80.0" text="Roll" />
+                              <Button fx:id="endTurn" mnemonicParsing="false" onAction="#endTurn" prefWidth="80.0" text="End Turn" />
+                           </children>
+                        </VBox>
+                        <Text fx:id="rolledText" strokeType="OUTSIDE" strokeWidth="0.0" text="You Rolled: " />
+                     </children>
+                  </TilePane>
+                  <TilePane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Button fx:id="roll" mnemonicParsing="false" onAction="#roll" prefWidth="80.0" text="Roll" />
+                              <Button fx:id="endTurn" mnemonicParsing="false" onAction="#endTurn" prefWidth="80.0" text="End Turn" />
+                           </children>
+                        </VBox>
+                        <Text fx:id="rolledText" strokeType="OUTSIDE" strokeWidth="0.0" text="You Rolled: " />
+                     </children>
+                  </TilePane>
                   <VBox alignment="CENTER" fillWidth="false" TilePane.alignment="CENTER_LEFT">
                      <children>
                         <VBox>

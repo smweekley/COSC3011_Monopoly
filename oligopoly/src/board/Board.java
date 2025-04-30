@@ -28,7 +28,7 @@ public class Board {
         players.add(player);
     }
 
-    public void addPlayers(ArrayList<Player> players) {
+    public void updatePlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
