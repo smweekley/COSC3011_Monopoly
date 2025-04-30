@@ -26,4 +26,33 @@ public class Jail extends Tile{
     public void setName(String newName) {
         name = newName;
     }
+
+    public ArrayList<String> getTileInfo() {
+        ArrayList<String> info = new ArrayList<>();
+        info.add("Jail");
+        info.add(getName());
+        info.add("Players sent here must wait 3 turns or pay bail to get out.");
+        StringBuilder propSummary = new StringBuilder();
+        if (!playersInJail.isEmpty()) {
+            for (Player jailBird : playersInJail) {
+                propSummary.append(jailBird.getName() + " is in jail lmao. ");
+            }
+        } else {
+            propSummary.append("The jail is empty.");
+        }
+        info.add(propSummary.toString());
+
+        propSummary = new StringBuilder();
+        if (!playersVisiting.isEmpty()) {
+            for (Player jailBird : playersInJail) {
+                propSummary.append(jailBird.getName() + " is visiting the jail. ");
+            }
+        } else {
+            propSummary.append("Nobody is visiting jail.");
+        }
+        info.add(propSummary.toString());
+
+        return info;
+    }
+    
 }

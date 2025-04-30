@@ -12,8 +12,8 @@ public class Property extends Tile{
     private enum Colors { BROWN, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE};
     private Colors propertyColor;
     private Player propertyOwner;
-    private int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
-    private int purchasePrice;
+    private final int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
+    private final int purchasePrice;
     private int houseCount;
     private int hotelCount;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
@@ -66,22 +66,24 @@ public class Property extends Tile{
 
     public int getPurchasePrice() { return purchasePrice; }
 
+    public int getHouseCount() { return houseCount; }
+
+    public boolean isOwned() { return propertyOwned; }
+
+    public boolean isMortgaged() { return isMortgaged; }
+
+    // Return an unalterable copy of colorSet for exterior checks
+    public List<Property> getColorSet() { return Collections.unmodifiableList(colorSet); }
+
     public int getRent() {
         int index = hotelCount > 0 ? 5 : houseCount;
         return rent[index];
     }
 
-    public int getHouseCount() { return houseCount; }
-
-    public boolean isOwned() { return propertyOwned; }
-
     public void setOwner(Player player) {
         propertyOwner = player;
         propertyOwned = true;
     }
-
-    // Return an unalterable copy of colorSet for exterior checks
-    public List<Property> getColorSet() { return Collections.unmodifiableList(colorSet); }
     
     // Buy Property
     public boolean buyProperty(Player player) {
@@ -93,7 +95,7 @@ public class Property extends Tile{
             return true;
         }
         return false;
-        }
+    }
 
     // Sell Property (Just goes back to bank)
     public void sellProperty(Player player) {
@@ -109,7 +111,7 @@ public class Property extends Tile{
 
     // Pay Rent
     public void payRent(Player player) {
-        if (!isMortgaged ) {
+        if (!isMortgaged()) {
             int rentAmount = getRent();
             player.reduceMoney(rentAmount);
             propertyOwner.addMoney(rentAmount);
@@ -157,17 +159,17 @@ public class Property extends Tile{
 
         // Build house/hotel
         player.reduceMoney(this.houseCost);
-        if (this.houseCount == 4) {
-            this.hotelCount++;
+        if (getHouseCount() == 4) {
+            hotelCount++;
         }
         else {
-            this.houseCount++;
+            houseCount++;
         }
 
-        if (this.hotelCount >= 1) {
-            System.out.println("A hotel has been built on " + this.name + ".");
+        if (getHouseCount() >= 1) {
+            System.out.println("A hotel has been built on " + getName() + ".");
         } else {
-            System.out.println("A house has been built on " + this.name + ". Total houses: " + this.houseCount);
+            System.out.println("A house has been built on " + getName() + ". Total houses: " + getHouseCount());
         }
         return true;
     }
@@ -199,13 +201,45 @@ public class Property extends Tile{
         }
     }
 
+    /*
+    Returns ArrayList of strings
+    [0] = Tile Type
+    [1] = Tile Name
+    [2] = Tile Ownership
+    [3] = Rent
+    [4] = House Cost
+    [5] = Property Color
+    [6] = Is property mortgaged
+    [7] = Cost to unmortgage
+    [8] = If property owner owns other properties in color set, and their details.
+    */
     public ArrayList<String> getTileInfo() {
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> info = new ArrayList<String>();
         int propertiesOwnedInSet = 0;
-        int unmortgageCost = (int) ((this.purchasePrice / 2) * 1.10);
+        int unmortgageCost = (int) ((purchasePrice / 2) * 1.10);
+
+        info.add("Property");
+        info.add(getName());
+
+        if (isOwned()){
+            info.add("Property Owner: " + propertyOwner.getName());
+        } else {
+            info.add("Property Owner: Not Owned");
+        }
+
+        info.add(Integer.toString(getRent()));
+        info.add(Integer.toString(houseCost));
+        info.add(propertyColor.toString());
+        if (isMortgaged()) {
+            info.add("This property is mortgaged.");
+        } else{
+            info.add("This property is not mortgaged.");
+        }
+        
+        info.add("$" + unmortgageCost);
 
         StringBuilder propSummary = new StringBuilder();
-        if (this.propertyOwned) {
+        if (isOwned()) {
             for (Property prop : colorSet) {
                 if (prop.getOwner() == this.getOwner()) {
                     propertiesOwnedInSet++;
@@ -217,25 +251,14 @@ public class Property extends Tile{
                     }
                 }
             }
-        }
-        temp.add("Tile Type: Property");
-        temp.add("Tile Name: " + this.getName());
-
-        if (this.isOwned()){
-            temp.add("Property Owner: " + this.propertyOwner.getName());
-        } else {
-            temp.add("Property Owner: Not Owned");
+            if (propertiesOwnedInSet > 0) {
+                info.add("Property Owner Also Owns: " + propSummary);
+            }
+            else {
+                info.add("Property Owner Also Owns: None of the other properties in the set.");
+            }
         }
 
-        temp.add("Rent: " + Integer.toString(this.getRent()));
-        temp.add("House Cost: " + Integer.toString(this.houseCost));
-        temp.add("Color Group" + this.propertyColor.toString());
-        temp.add("Mortgaged: " + Boolean.toString(this.isMortgaged));
-        temp.add("Cost to Lift Mortgage: $" + unmortgageCost);
-        if (this.propertyOwned && propertiesOwnedInSet > 0) {
-            temp.add("Property Owner Also Owns: " + propSummary);
-        }
-
-        return temp;
+        return info;
     }
 }

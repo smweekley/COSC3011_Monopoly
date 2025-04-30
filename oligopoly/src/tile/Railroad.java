@@ -15,10 +15,10 @@ public class Railroad extends Tile{
     public Railroad(String name, int buyCost) {
         this.name = name;
         this.buyCost = buyCost;
-        this.mortgageValue = (int) (buyCost / 2);
-        this.isMortgaged = false;
-        this.owner = null;
-        this.isOwned = false;
+        mortgageValue = (int) (buyCost / 2);
+        isMortgaged = false;
+        owner = null;
+        isOwned = false;
     }
 
     public Railroad() {
@@ -33,6 +33,10 @@ public class Railroad extends Tile{
 
     public void setName(String newName) {
         name = newName;
+    }
+
+    public boolean isOwned() {
+        return isOwned;
     }
 
     public void landOn(Player player) {
@@ -63,49 +67,74 @@ public class Railroad extends Tile{
         player.addProperty(this);
     }
 
-    public void mortgage() {    // Rough outline without logic checks.
+    public boolean getMortgaged(){
+        return isMortgaged;
+    }
+
+    public void mortgage() {// Rough outline without logic checks.
         owner.addMoney((int) (buyCost / 2));
-        this.isMortgaged = true;
+        isMortgaged = true;
         return;
     }
 
+    /*
+    [0] = Tile Type
+    [1] = Tile Name
+    [2] = Is property owned
+    [3] = Rent
+    [4] = Is property mortgaged
+    [5] = Cost to unmortgage
+    [6] = If owner owns other properties of same type, and their names if true.
+    */
     public Player getOwner() { return owner;}
 
      public ArrayList<String> getTileInfo() {
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> info = new ArrayList<String>();
         int railRoadsOwned = 0;
         int unmortgageCost = (int) (mortgageValue * 1.10);
+        
+ 
+        info.add("Railroad");
+        info.add(getName());
+
+        if (isOwned()){
+            info.add(getOwner().getName());
+        } else {
+            info.add("Property Not Owned");
+        }
+
+        info.add(Integer.toString(getRent()));
+
+        if (getMortgaged()){
+            info.add("This tile is mortgaged.");
+        } else {
+            info.add("This tile is not mortgaged.");
+        }
+
+        info.add("$" + unmortgageCost);
 
         StringBuilder propSummary = new StringBuilder();
-        if (this.isOwned) {
+        if (isOwned()) {
             ArrayList<Tile> properties = owner.getProperties();
             for (Tile prop : properties) {
                 if (prop instanceof Railroad) {
-                    Railroad rrTileTemp = (Railroad) prop;
-                    if (rrTileTemp.getOwner() == this.getOwner() && rrTileTemp != this) {
+                    Railroad rrTileinfo = (Railroad) prop;
+                    if (rrTileinfo.getOwner() == this.getOwner() && rrTileinfo != this) {
                         railRoadsOwned++;
-                        propSummary.append(prop.getName() + ". ");
+                        propSummary.append(prop.getName()).append(". ");
                     }
                 }
             }
-        }
-        temp.add("Tile Type: Railroad");
-        temp.add("Tile Name: " + this.getName());
-
-        if (this.isOwned){
-            temp.add("Property Owner: " + this.owner.getName());
+        
+            if (railRoadsOwned > 0) {
+                info.add("Player also owns these Railroads: " + propSummary.toString());
+            } else {
+                info.add("Player does not own any other Railroads.");
+            }
         } else {
-            temp.add("Property Owner: Not Owned");
+            info.add("Tile is unowned. No Railroad ownership information available.");
         }
 
-        temp.add("Rent: " + Integer.toString(this.getRent()));
-        temp.add("Mortgaged: " + Boolean.toString(this.isMortgaged));
-        temp.add("Cost to Lift Mortgage: $" + unmortgageCost);
-        if (this.isOwned && railRoadsOwned > 0) {
-            temp.add("Property Owner Also Owns: " + propSummary);
-        }
-
-        return temp;
+        return info;
     }
-
 }

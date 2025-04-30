@@ -13,9 +13,9 @@ public class Utility extends Tile{
 
     public Utility(int buyCost, String name) {
         this.buyCost = buyCost;
-        this.mortgageValue = (int) (buyCost / 2);
+        mortgageValue = (int) (buyCost / 2);
         this.name = name;
-        this.isMortgaged = false;
+        isMortgaged = false;
         owner = null;
     }
 
@@ -24,6 +24,14 @@ public class Utility extends Tile{
     public Player getOwner() {return owner;}
 
     public void setOwner(Player newOwner) {owner = newOwner;}
+
+    public void setName(String newName) { name = newName; }
+
+    public String getName() { return name; }
+
+    public boolean isOwned() { return isOwned; }
+
+    public boolean isMortgaged() { return isMortgaged; }
 
     public void landOn(Player player) {
         if (owner != null && owner != player) { // Only pay rent if it's owned and not the player landing on it
@@ -37,48 +45,60 @@ public class Utility extends Tile{
         }
     }
 
-    public void setName(String newName) {
-        name = newName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    /*
+    [0] = Tile Type
+    [1] = Tile Name
+    [2] = Tile Ownership
+    [3] = Rent
+    [4] = Is property mortgaged
+    [5] = Cost to unmortgage
+    [6] = If owner owns other properties of same type, and their names if true.
+    */
     public ArrayList<String> getTileInfo() {
-        ArrayList<String> temp = new ArrayList<String>();
+        ArrayList<String> info = new ArrayList<String>();
         int utilitiesOwned = 0;
         int unmortgageCost = (int) (mortgageValue * 1.10);
 
+        info.add("Utility");
+        info.add(getName());
+
+        if (this.isOwned()) {
+            info.add(getOwner().getName());
+        } else {
+            info.add("Not Owned");
+        }
+
+        info.add("Depends on dice roll.");
+
+        if (isMortgaged()) {
+            info.add("This tile is mortgaged.");
+        } else {
+            info.add("This tile is not mortgaged.");
+        }
+        
+        info.add("$" + unmortgageCost);
+
         StringBuilder propSummary = new StringBuilder();
-        if (this.isOwned) {
+        if (isOwned()) {
             ArrayList<Tile> properties = owner.getProperties();
             for (Tile prop : properties) {
                 if (prop instanceof Utility) {
-                    Utility utilityTileTemp = (Utility) prop;
-                    if (utilityTileTemp.getOwner() == this.getOwner() && utilityTileTemp != this) {
+                    Utility utilityTileinfo = (Utility) prop;
+                    if (utilityTileinfo.getOwner() == this.getOwner() && utilityTileinfo != this) {
                         utilitiesOwned++;
                         propSummary.append(prop.getName() + ". ");
                     }
                 }
             }
-        }
-        temp.add("Tile Type: Utility");
-        temp.add("Tile Name: " + this.getName());
-
-        if (this.isOwned) {
-            temp.add("Property Owner: " + this.owner.getName());
+            if (utilitiesOwned > 0) {
+                info.add("Property owner also owns: " + propSummary);
+            } else {
+                info.add("Property owner does not own any other utilities.");
+            }
         } else {
-            temp.add("Property Owner: Not Owned");
+            info.add("Tile is unowned. No Utility ownership information available.");
         }
 
-        temp.add("Rent: Depends on dice roll.");
-        temp.add("Mortgaged: " + Boolean.toString(this.isMortgaged));
-        temp.add("Cost to Lift Mortgage: $" + unmortgageCost);
-        if (this.isOwned && utilitiesOwned > 0) {
-            temp.add("Property Owner Also Owns: " + propSummary);
-        }
-
-        return temp;
+        return info;
     }
 }

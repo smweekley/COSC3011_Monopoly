@@ -1,5 +1,7 @@
 package tile;
 
+import java.util.ArrayList;
+
 import player.Player;
 
 public class Go extends Tile{
@@ -21,4 +23,13 @@ public class Go extends Tile{
     public void landOn(Player player) {
         player.addMoney(collectMoney);
     }
+
+    public ArrayList<String> getTileInfo() {
+        ArrayList<String> info = new ArrayList<>();
+        info.add("Go");
+        info.add(getName());
+        info.add("Collect $200 when passing or landing on this tile.");
+        return info;
+    }
+    
 }
