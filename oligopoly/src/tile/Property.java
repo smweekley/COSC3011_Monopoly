@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Collections;
 
 public class Property extends Tile{
-    private enum Colors { BROWN, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE};
+    public enum Colors { BROWN, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE};
     private Colors propertyColor;
     private Player propertyOwner;
     private int[] rent; // ex: {50, 200, 600, 1400, 1700, 2000} {0 houses, 1 house, 2, 3, 4, 1 hotel}
@@ -222,9 +222,9 @@ public class Property extends Tile{
         info.add(getName());
 
         if (isOwned()){
-            info.add("Property Owner: " + propertyOwner.getName());
+            info.add(propertyOwner.getName());
         } else {
-            info.add("Property Owner: Not Owned");
+            info.add("Bank");
         }
 
         info.add(Integer.toString(getRent()));

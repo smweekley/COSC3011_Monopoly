@@ -31,7 +31,9 @@ public class Jail extends Tile{
         ArrayList<String> info = new ArrayList<>();
         info.add("Jail");
         info.add(getName());
-        info.add("Players sent here must wait 3 turns or pay bail to get out.");
+        info.add("Players sent here must:");
+        info.add("wait 3 turns, roll doubles");
+        info.add("or pay bail to get out.");
         StringBuilder propSummary = new StringBuilder();
         if (!playersInJail.isEmpty()) {
             for (Player jailBird : playersInJail) {

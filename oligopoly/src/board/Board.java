@@ -7,8 +7,11 @@ import player.Player;
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Circle;
 import javafx.scene.image.ImageView;
+
+import java.awt.*;
 import java.util.ArrayList;
-import tile.Tile;
+
+import tile.*;
 
 
 public class Board {
@@ -21,24 +24,48 @@ public class Board {
 
     public Board(ImageView imageView) {
         this.imageView = imageView;
+        this.tiles = new ArrayList<>();
         this.players = new ArrayList<>();
+        initBoard();
     }
 
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
+    public void addPlayer(Player player) {players.add(player);}
 
-    public void updatePlayers(ArrayList<Player> players) {
-        this.players = players;
-    }
+    public void updatePlayers(ArrayList<Player> players) {this.players = players;}
 
-    public void removePlayer(Player player) {
-        players.remove(player);
-    }
+    public void removePlayer(Player player) {players.remove(player);}
 
-    public ArrayList<Player> getPlayers() {
-        return players;
+    public ArrayList<Player> getPlayers() {return players;}
+
+    public Player getPlayer(int player) {return players.get(player);}
+
+    public ArrayList<Tile> getTiles() {return tiles;}
+
+    public Tile getTile(int tile) {return tiles.get(tile);}
+
+
+    // used for testing land on / click on not final at all
+    // plz make a real version of this
+    public void initBoard(){
+        Property.Colors[] colors =  Property.Colors.values();
+        for (int i = 0; i < 41; i++){
+            int price = (i*1000);
+            int[] rents = {10, 100, 500, 1000, 1500, 2000};
+            int house = (i*100);
+            for (int j = 0; j < rents.length; j++){ rents[j] = rents[j]*i; }
+            Property.Colors color = colors[i/6];
+            if ( i == 1 ){
+                Tile nextTile = new Go(20);
+                tiles.add(nextTile);
+            }else{
+                Tile nextTile = new Property("name",price,rents,house,color);
+                tiles.add(nextTile);
+            }
+        }
     }
+    // used for testing land on / click on not final at all
+    // plz make a real version of this
+
 
     //will need updating
     //also Controller.java seems to do some of this already    (line 43-47)

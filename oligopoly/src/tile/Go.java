@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import player.Player;
 
 public class Go extends Tile{
+
     private final int collectMoney;
 
     public Go(int collectMoney) {
@@ -28,7 +29,8 @@ public class Go extends Tile{
         ArrayList<String> info = new ArrayList<>();
         info.add("Go");
         info.add(getName());
-        info.add("Collect $200 when passing or landing on this tile.");
+        info.add("Collect $200 when passing or");
+        info.add("landing on this tile.");
         return info;
     }
     

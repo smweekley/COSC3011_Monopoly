@@ -65,7 +65,7 @@ public class Utility extends Tile{
         if (this.isOwned()) {
             info.add(getOwner().getName());
         } else {
-            info.add("Not Owned");
+            info.add("Bank");
         }
 
         info.add("Depends on dice roll.");

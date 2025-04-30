@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <StackPane fx:id="stackPane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.Controller">
@@ -21,7 +22,7 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <TableView fx:id="playersTable" maxHeight="-1">
+                        <TableView fx:id="playersTable" maxHeight="-1" prefHeight="282.0" prefWidth="248.0">
                            <columns>
                               <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Players">
                                  <columns>
@@ -38,6 +39,48 @@
                         </TableView>
                      </children>
                   </VBox>
+                  <TilePane prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <StackPane prefHeight="150.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="landedImg" fitHeight="284.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@propImg/17.png" />
+                                       </image>
+                                    </ImageView>
+                                    <VBox alignment="CENTER" prefHeight="264.0" prefWidth="248.0" StackPane.alignment="CENTER">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0">
+                                             <font>
+                                                <Font size="21.0" />
+                                             </font>
+                                          </Text>
+                                          <Text fx:id="landedAddress" strokeType="OUTSIDE" strokeWidth="0.0" text="Address: " />
+                                          <Text fx:id="landedSet" strokeType="OUTSIDE" strokeWidth="0.0" text="Set:" />
+                                          <Text fx:id="landedOwner" strokeType="OUTSIDE" strokeWidth="0.0" text="Owner:" />
+                                          <Text fx:id="landedOwnersOthers" strokeType="OUTSIDE" strokeWidth="0.0" text="With Others in Set:" />
+                                          <Text fx:id="landedRent" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Rent:" />
+                                          <Text fx:id="landedUpgrade" strokeType="OUTSIDE" strokeWidth="0.0" text="Upgrade Cost:" />
+                                          <Text fx:id="landedUpgradeRent" strokeType="OUTSIDE" strokeWidth="0.0" text="Rent After Upgrade:" />
+                                          <Text fx:id="landedMortgaged" strokeType="OUTSIDE" strokeWidth="0.0" text="is/not Mortgaged:" />
+                                          <Text fx:id="landedMortgageCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Costs  To Unmortgage." />
+                                          <Text fx:id="landedMortgageValue" strokeType="OUTSIDE" strokeWidth="0.0" text="Worth  When Mortgaged." />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </StackPane>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Button fx:id="payRent" mnemonicParsing="false" text="Pay Rent" />
+                                    <Button fx:id="buy" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Buy" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </TilePane>
                </children>
             </TilePane>
             <Pane fx:id="boardPane">
@@ -51,45 +94,94 @@
             </Pane>
             <TilePane alignment="CENTER" prefWidth="0.0" HBox.hgrow="NEVER">
                <children>
-                  <TilePane prefHeight="200.0" prefWidth="200.0">
+                  <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <VBox>
+                        <TilePane prefHeight="0.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="roll" mnemonicParsing="false" onAction="#roll" prefWidth="80.0" text="Roll" />
-                              <Button fx:id="endTurn" mnemonicParsing="false" onAction="#endTurn" prefWidth="80.0" text="End Turn" />
-                           </children>
-                        </VBox>
-                        <Text fx:id="rolledText" strokeType="OUTSIDE" strokeWidth="0.0" text="You Rolled: " />
-                     </children>
-                  </TilePane>
-                  <VBox alignment="CENTER" fillWidth="false" TilePane.alignment="CENTER_LEFT">
-                     <children>
-                        <VBox>
-                           <children>
-                              <TextField fx:id="playerIn" alignment="CENTER" prefColumnCount="1" text="player" />
-                              <HBox>
+                              <VBox prefHeight="200.0" prefWidth="248.0">
                                  <children>
-                                    <TextField fx:id="relativeIn" alignment="CENTER" prefColumnCount="1" prefWidth="70.0" text="relative" />
-                                    <Button mnemonicParsing="false" onAction="#doRelativeMove" prefWidth="70.0" text="relative" />
+                                    <VBox alignment="TOP_CENTER" prefHeight="103.0" prefWidth="248.0">
+                                       <children>
+                                          <Button fx:id="roll" mnemonicParsing="false" onAction="#roll" prefWidth="80.0" text="Roll" />
+                                          <Button fx:id="endTurn" mnemonicParsing="false" onAction="#endTurn" prefWidth="80.0" text="End Turn" />
+                                          <Text fx:id="rolledText" strokeType="OUTSIDE" strokeWidth="0.0" text="You Rolled: " />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" fillWidth="false">
+                                       <children>
+                                          <VBox>
+                                             <children>
+                                                <TextField fx:id="playerIn" alignment="CENTER" prefColumnCount="1" text="player" />
+                                                <HBox>
+                                                   <children>
+                                                      <TextField fx:id="relativeIn" alignment="CENTER" prefColumnCount="1" prefWidth="70.0" text="relative" />
+                                                      <Button mnemonicParsing="false" onAction="#doRelativeMove" prefWidth="70.0" text="relative" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <TextField fx:id="absoluteIn" alignment="TOP_CENTER" prefColumnCount="1" prefWidth="70.0" text="absolute" />
+                                                      <Button mnemonicParsing="false" onAction="#doAbsoluteMove" prefWidth="70.0" text="absolute" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <VBox>
+                                             <children>
+                                                <Button fx:id="loadGameButton" mnemonicParsing="false" onAction="#loadGame" prefWidth="80.0" text="Load Game" />
+                                                <Button fx:id="saveGameButton" mnemonicParsing="false" onAction="#saveGame" prefWidth="80.0" text="Save Game" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
                                  </children>
-                              </HBox>
-                              <HBox>
-                                 <children>
-                                    <TextField fx:id="absoluteIn" alignment="TOP_CENTER" prefColumnCount="1" prefWidth="70.0" text="absolute" />
-                                    <Button mnemonicParsing="false" onAction="#doAbsoluteMove" prefWidth="70.0" text="absolute" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
-                        </VBox>
-                        <VBox>
+                        </TilePane>
+                        <TilePane prefWidth="200.0">
                            <children>
-                              <Button fx:id="loadGameButton" mnemonicParsing="false" onAction="#loadGame" prefWidth="80.0" text="Load Game" />
-                              <Button fx:id="saveGameButton" mnemonicParsing="false" onAction="#saveGame" prefWidth="80.0" text="Save Game" />
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <StackPane prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <ImageView fx:id="clickImg" fitHeight="284.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@propImg/17.png" />
+                                             </image>
+                                          </ImageView>
+                                          <VBox alignment="CENTER" prefHeight="264.0" prefWidth="248.0" StackPane.alignment="CENTER">
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0">
+                                                   <font>
+                                                      <Font size="21.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="clickedAddress" strokeType="OUTSIDE" strokeWidth="0.0" text="Address: " />
+                                                <Text fx:id="clickedSet" strokeType="OUTSIDE" strokeWidth="0.0" text="Set:" />
+                                                <Text fx:id="clickedOwner" strokeType="OUTSIDE" strokeWidth="0.0" text="Owner:" />
+                                                <Text fx:id="clickedOwnersOthers" strokeType="OUTSIDE" strokeWidth="0.0" text="With Others in Set:" />
+                                                <Text fx:id="clickedRent" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Rent:" />
+                                                <Text fx:id="clickedUpgrade" strokeType="OUTSIDE" strokeWidth="0.0" text="Upgrade Cost:" />
+                                                <Text fx:id="clickedUpgradeRent" strokeType="OUTSIDE" strokeWidth="0.0" text="Rent After Upgrade:" />
+                                                <Text fx:id="clickedMortgaged" strokeType="OUTSIDE" strokeWidth="0.0" text="is/not Mortgaged:" />
+                                                <Text fx:id="clickedMortgageCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Costs  To Unmortgage." />
+                                                <Text fx:id="clickedMortgageValue" strokeType="OUTSIDE" strokeWidth="0.0" text="Worth  When Mortgaged." />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </StackPane>
+                                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <Button fx:id="mortgage" mnemonicParsing="false" text="(un)morage" />
+                                          <Button fx:id="upgrade" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Upgrade" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </TilePane>
                      </children>
                   </VBox>
-                  <Text fx:id="clickedOnText" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Tile: " />
                </children>
             </TilePane>
          </children>
