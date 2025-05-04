@@ -26,6 +26,7 @@ public class Property extends Tile{
     private int houseCount;
     private int hotelCount;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
+    private int index;
     private boolean propertyOwned;
     private ArrayList<Property> colorSet; // Properties of same color
     private boolean isMortgaged;
