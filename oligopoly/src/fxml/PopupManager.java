@@ -1,5 +1,9 @@
 package fxml;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -31,6 +35,24 @@ public class PopupManager {
         return instance;
     }
 
+    // to-do: showPopup(Image img)
+
+    public static void showPopup(Image image){
+
+        final Stage primaryStage = primaryStageHolder;
+
+        if (primaryStage == null) {
+            System.err.println("PopupUtil not initialized! Call initialize() first.");
+            return;
+        }
+
+        if (Platform.isFxApplicationThread()) {
+            createPopup(primaryStage, image);
+        } else {
+            Platform.runLater(() -> createPopup(primaryStage, image));
+        }
+    }
+
     public static void showPopup(String message) {
 
         final Stage primaryStage = primaryStageHolder;
@@ -55,6 +77,7 @@ public class PopupManager {
         popupStage.setTitle("Message");
 
         Label label = new Label(message);
+        label.setFont(new Font(30));
         Button okButton = new Button("OK");
         okButton.setOnAction(e -> popupStage.close());
 
@@ -64,6 +87,35 @@ public class PopupManager {
         Scene scene = new Scene(root);
         popupStage.setScene(scene);
         popupStage.sizeToScene();
+        popupStage.show();
+    }
+
+    private static void createPopup(Stage ownerStage, Image image) {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.initOwner(ownerStage);
+        popupStage.initStyle(StageStyle.UTILITY);
+        popupStage.setTitle("Image");
+
+        Button okButton = new Button("OK");
+        okButton.setOnAction(e -> popupStage.close());
+
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setPreserveRatio(true);
+
+
+        VBox root = new VBox(10, imageView, okButton);
+        VBox.setVgrow(imageView, Priority.ALWAYS);
+        root.setStyle("-fx-padding: 20; -fx-alignment: center;");
+
+        imageView.fitWidthProperty().bind(root.widthProperty().subtract(20)); // account for padding
+        imageView.fitHeightProperty().bind(root.heightProperty()
+                .subtract(okButton.heightProperty())
+                .subtract(30)); // account for padding and spacing
+
+        Scene scene = new Scene(root);
+        popupStage.setScene(scene);
         popupStage.show();
     }
 

@@ -68,7 +68,7 @@ public class Utility extends Tile{
             info.add("Bank");
         }
 
-        info.add("Depends on dice roll.");
+        info.add(String.valueOf(buyCost));
 
         if (isMortgaged()) {
             info.add("This tile is mortgaged.");

@@ -35,9 +35,9 @@ public class Railroad extends Tile{
         name = newName;
     }
 
-    public boolean isOwned() {
-        return isOwned;
-    }
+    public boolean isOwned() {return isOwned;}
+
+    public boolean isMortgaged() {return false;}
 
     public void landOn(Player player) {
         if (owner == null) {
@@ -108,7 +108,7 @@ public class Railroad extends Tile{
             info.add("Bank");
         }
 
-        info.add(Integer.toString(getRent()));
+        info.add(Integer.toString(buyCost));
 
         if (getMortgaged()){
             info.add("This tile is mortgaged.");

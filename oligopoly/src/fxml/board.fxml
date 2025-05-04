@@ -73,8 +73,8 @@
                               </StackPane>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Button fx:id="payRent" mnemonicParsing="false" text="Pay Rent" />
-                                    <Button fx:id="buy" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Buy" />
+                                    <Button fx:id="landedInteract" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#handleLandedInteract" text="landedInteract" visible="false" />
+                                    <Button fx:id="landedUpgradeBtn" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#handleLandedUpgrade" text="landedUpgrade" visible="false" />
                                  </children>
                               </HBox>
                            </children>
@@ -172,8 +172,8 @@
                                     </StackPane>
                                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Button fx:id="mortgage" mnemonicParsing="false" text="(un)morage" />
-                                          <Button fx:id="upgrade" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Upgrade" />
+                                          <Button fx:id="mortgage" mnemonicParsing="false" onAction="#handleMortgage" text="Mortgage" visible="false" />
+                                          <Button fx:id="upgrade" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#handleUpgrade" text="Upgrade" visible="false" />
                                        </children>
                                     </HBox>
                                  </children>

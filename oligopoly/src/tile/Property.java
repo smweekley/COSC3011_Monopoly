@@ -25,14 +25,16 @@ public class Property extends Tile{
     private int purchasePrice;
     private int houseCount;
     private int hotelCount;
+    private int index;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
     private boolean propertyOwned;
     private ArrayList<Property> colorSet; // Properties of same color
     private boolean isMortgaged;
+    private Label houseLabel;
 
 
     // Constructor
-    public Property(String name, int purchasePrice, int[] rent, int houseCost, Colors propertyColor) {
+    public Property(String name, int purchasePrice, int[] rent, int houseCost, Colors propertyColor, int index) {
         this.setName(name);
         this.purchasePrice = purchasePrice;
         this.rent = rent;
@@ -42,6 +44,8 @@ public class Property extends Tile{
         this.propertyOwner = null;
         this.propertyOwned = false;
         this.isMortgaged = false;
+        this.index = index;
+        this.houseLabel = null;
     }
 
     // Match properties based on color. Call this AFTER all properties have been constructed
@@ -71,11 +75,21 @@ public class Property extends Tile{
 
     public String getName() { return name; }
 
+    public int getIndex() {
+        return index;
+    }
+
     public Player getOwner() { return propertyOwner; }
 
     public int getPurchasePrice() { return purchasePrice; }
 
     public int getHouseCount() { return houseCount; }
+
+    public void setHouseCount(int count){this.houseCount = count;}
+
+    public void setHouseLabel(Label label){this.houseLabel = label;}
+
+    public Label getHouseLabel(){return houseLabel;}
 
     public boolean isOwned() { return propertyOwned; }
 
@@ -95,7 +109,7 @@ public class Property extends Tile{
     }
     
     // Buy Property
-    public boolean buyProperty(Player player) {
+    public boolean buyProperty(Player player) {  //to-do:standardize
         if (propertyOwned == false && player.getMoney() >= purchasePrice) {
             player.reduceMoney(purchasePrice);
             setOwner(player);
@@ -131,6 +145,7 @@ public class Property extends Tile{
 
     // Build house/hotel (should be able to be done by player at any point during their turn regardless of position
     // will have to adjust for that as well as allowing player to buy multiple houses per turn given that they have the money)
+    // to-do: add popups
     public boolean buyHouse(Player player) {
 
         if (propertyOwner != player) {  // Player doesn't own property
@@ -268,7 +283,13 @@ public class Property extends Tile{
         }
 
         info.add(Integer.toString(getRent()));
-        info.add(Integer.toString(houseCost));
+
+        if (isOwned()){
+            info.add(Integer.toString(houseCost));
+        } else {
+            info.add(Integer.toString(purchasePrice));
+        }
+
         info.add(propertyColor.toString());
         if (isMortgaged()) {
             info.add("This property is mortgaged.");

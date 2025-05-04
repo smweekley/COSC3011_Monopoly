@@ -172,6 +172,7 @@ public class Player {
     public void releaseFromJail() {
         this.inJail = false;
         this.timeInJail = 0;
+        this.position = 10;
     }
 
     public int roll(int numDice) {

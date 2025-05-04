@@ -1,12 +1,11 @@
 package fxml;
 
 import board.Board;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import player.Player;
 import javafx.beans.value.ChangeListener;
@@ -14,15 +13,16 @@ import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import state.StateManager;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Random;
-import fxml.PopupManager;
+
 import tile.Property;
+import tile.Railroad;
 import tile.Tile;
+import tile.Utility;
 
 public class Controller {
 
@@ -61,8 +61,8 @@ public class Controller {
     @FXML private Text clickedMortgageValue;
 
     @FXML private ImageView landedImg;
-    @FXML private Button buy;
-    @FXML private Button payRent;
+    @FXML private Button landedInteract;
+    @FXML private Button landedUpgradeBtn;
     @FXML private Text landedAddress;
     @FXML private Text landedSet;
     @FXML private Text landedOwner;
@@ -74,13 +74,13 @@ public class Controller {
     @FXML private Text landedMortgageCost;
     @FXML private Text landedMortgageValue;
 
+    private int displayedTile;
+
 
     @FXML
     public void initialize() {
         //System.out.println("Initializing board...");
         // Set up scaling
-		System.out.println("Working Directory: " + System.getProperty("user.dir"));
-		System.out.println("ClassLoader Resource Path: " + getClass().getResource("/fxml/propImg/1.png"));
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.fitWidthProperty().bind(boardPane.widthProperty());
@@ -120,9 +120,10 @@ public class Controller {
 
         //Auto scale
         ChangeListener<Number> resizeListener = (obs, oldVal, newVal)
-                -> updateTokenPositions();
+                -> updateIconPositions();
         boardPane.widthProperty().addListener(resizeListener);
         boardPane.heightProperty().addListener(resizeListener);
+        clickDisplayTile(40);
     }
 
     public void initializePlayers(ArrayList<Player> players) {
@@ -146,98 +147,270 @@ public class Controller {
         playersTable.setMaxHeight(playersTable.getItems().size() * playersTable.getFixedCellSize() + headerHeight);
     }
 
-    private void updateTokenPositions() {
+    private void updateIconPositions() {
         for (Player p : board.getPlayers()) {
             board.movePlayerToPosition(p, p.getPosition());
+            int position = board.getPlayers().getFirst().getPosition();
+            updateLandedInfo(position);
+        }
+        for (Tile p : board.getTiles()){
+            displayHouses(p);
         }
     }
 
-    @FXML
-    private void handleImageClick(MouseEvent event) {
-        // handle click on board
+    public void displayHouses(Tile tile){
+        if(tile instanceof Property ){
+            int location = ((Property) tile).getIndex();
+            int houses = ((Property) tile).getHouseCount();
+            Label label;
+            if(houses > 0) {
+                if(((Property) tile).getHouseLabel() == null){
+                    label = new Label(String.valueOf(houses));
+                    label.setFont(new Font(30));
+                    boardPane.getChildren().add(label);
+                    ((Property) tile).setHouseLabel(label);
+                    moveHouseNum(label,location);
+                }else{
+                    label = ((Property) tile).getHouseLabel();
+                    moveHouseNum(label,location);
+                }
+            }
+        }
+    }
+
+    public void moveHouseNum(Label label, int location){
+        double[] scaleFactor = scaleFactor(imageView);
+
+        double imageX = imageView.getBoundsInParent().getMinX();
+        double imageY = imageView.getBoundsInParent().getMinY();
+
+        double tokenX = imageX + board.getScreenLocation(location)[0] / scaleFactor[0];
+        double tokenY = imageY + board.getScreenLocation(location)[1] / scaleFactor[1];
+
+        if(location < 10){
+            tokenX = tokenX - (80 / scaleFactor[0]);
+            tokenY = tokenY - (50 / scaleFactor[1]);
+        }else if (location < 20){
+            tokenX = tokenX - (15 / scaleFactor[0]);
+            tokenY = tokenY - (110 / scaleFactor[1]);
+        }else if (location < 30){
+            tokenX = tokenX + (60 / scaleFactor[0]);
+            tokenY = tokenY - (50 / scaleFactor[1]);
+        }else{
+            tokenX = tokenX - (10 / scaleFactor[0]);
+            tokenY = tokenY + (20 / scaleFactor[1]);
+        }
+
+        label.setLayoutX(tokenX);
+        label.setLayoutY(tokenY);
+    }
+
+    public static double[] scaleFactor(ImageView imageView){
         double imageViewWidth = imageView.getBoundsInLocal().getWidth();
         double imageViewHeight = imageView.getBoundsInLocal().getHeight();
         double originalWidth = 1080;
         double originalHeight = 1080;
         double scaleX = originalWidth / imageViewWidth;
         double scaleY = originalHeight / imageViewHeight;
-        double scaledX = event.getX() * scaleX;
-        double scaledY = event.getY() * scaleY;
-        int position = Board.PositionFinder.getClosestPosition(scaledX, scaledY);
-        //update display
-        clickDisplayTile(board.getTile(position).getTileInfo());
+        return new double[]{scaleX, scaleY};
     }
 
-    private void clickDisplayTile(ArrayList<String> input ){
+
+
+    @FXML
+    private void handleImageClick(MouseEvent event) {
+        // handle click on board
+        double[] scaleFactor = scaleFactor(imageView);
+        double scaledX = event.getX() * scaleFactor[0];
+        double scaledY = event.getY() * scaleFactor[1];
+        int position = Board.PositionFinder.getClosestPosition(scaledX, scaledY);
+        //update display
+        clickDisplayTile(position);
+        displayedTile = position;
+    }
+
+    @FXML
+    private void handleLandedInteract() {
+        Player player = board.getPlayers().getFirst();
+        Tile tile = board.getTile(player.getPosition());
+
+        // handle landed tile interaction button  to-do:enable when working
+        String function = landedInteract.getText();
+        switch (function) {
+            case "Mortgage" -> {
+                if (tile instanceof Property) {
+                    //((Property) tile).mortgage(player)
+                } else if (tile instanceof Railroad) {
+                    //((Railroad) tile).mortgage(player)
+                } else if (tile instanceof Utility) {
+                    //((Utility) tile).mortgage(player)
+                }
+            }
+            case "Unmortgage" -> {
+                if (tile instanceof Property) {
+                    //((Property) tile).unmortgage(player)
+                } else if (tile instanceof Railroad) {
+                    //((Railroad) tile).unmortgage(player)
+                } else if (tile instanceof Utility) {
+                    //((Utility) tile).unmortgage(player)
+                }
+            }
+            case "Pay Rent" -> {
+                //((Property) tile).payRent(player);
+            }
+            case "Buy" -> {
+                //((Property) tile).buyProperty(player);
+            }
+            case "Draw" -> {
+                if (/*tile instanceof Chest*/ true) {
+                    //((Chest) tile).drawCard(player)
+                } else {
+                    //((Chance) tile).drawCard(player)
+                }
+            }
+            case null, default -> PopupManager.showPopup("Invald \" landedInteract \" ");
+        }
+    }
+
+    @FXML
+    private void handleLandedUpgrade() {
+        Player player = board.getPlayers().getFirst();
+        Tile tile = board.getTile(player.getPosition());
+        //tile.buyHouse(player);     //to-do:enable when working
+    }
+
+    @FXML
+    private void handleMortgage() {
+        Player player = board.getPlayers().getFirst();
+        Tile tile = board.getTile(displayedTile);
+        if(Objects.equals(mortgage.getText(), "Mortgage")) {
+            //tile.mortgage(player);     //to-do:enable when working
+        }else{
+            //tile.unMortgage(player);    //to-do:enable when working
+        }
+    }
+
+    @FXML
+    private void handleUpgrade() {
+        Player player = board.getPlayers().getFirst();
+        Tile tile = board.getTile(displayedTile);
+        //tile.buyHouse(player);     //to-do:enable when working
+    }
+
+    private void clickDisplayTile(int position){
+        Tile tile = board.getTile(position);
+        ArrayList<String> input = tile.getTileInfo();
         //update display
         if(input.size() >= 5) {
-            if (input.get(4) == "This property is mortgaged.") {
+            if (Objects.equals(input.get(4), "This property is mortgaged.")) {
                 mortgage.setText("Unmortgage");
             } else {
                 mortgage.setText("Mortgage");
             }
         }
-        if(input.getFirst() == "Property"){
-            if(input.get(6) == "This property is mortgaged."){
-                mortgage.setText("Unmortgage");
-            }else{
-                mortgage.setText("Mortgage");
-            }
+
+        if(Objects.equals(input.getFirst(), "Property")){
+
             Tile.Colors[] colors =  Tile.Colors.values();
             for (int i = 0; i < colors.length; i++){
-                if (input.get(5) == colors[i].toString()){
+                if (Objects.equals(input.get(5), colors[i].toString())){
                     Image image = new Image("fxml/propImg/" + i + ".png");
                     clickImg.setImage(image);
                 }
             }
-            clickedAddress.setText("Address: " + input.get(1).charAt(1));
+            clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: " + input.get(1).charAt(0));
             clickedOwner.setText("Owner: " + input.get(2));
-            clickedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
+            clickedOwnersOthers.setText("With Others in Set: ");                        //need
             clickedRent.setText("Current Rent: " + input.get(3));
-            clickedUpgrade.setText("Upgrade Cost: " + input.get(4));
+            if(((Property) tile).isOwned()){
+                clickedUpgrade.setText("Upgrade Cost: " + input.get(4));
+            }else{
+                clickedUpgrade.setText("Buy Cost: " + input.get(4));
+            }
             clickedUpgradeRent.setText("Rent After Upgrade: ");                         //need
             clickedMortgaged.setText(input.get(6));
             clickedMortgageCost.setText("Costs " + input.get(7) + " to Unmortgage.");
             clickedMortgageValue.setText("Worth  When Mortgaged.");               //need
-            mortgage.setVisible(true);
-            upgrade.setVisible(true);
-        }else if(input.getFirst() == "Railroad"){
+
+            if(Objects.equals(input.get(6), "This property is mortgaged.")){
+                mortgage.setText("Unmortgage");
+            }else{
+                mortgage.setText("Mortgage");
+            }
+            if(((Property) tile).isOwned()){
+                Player player = board.getPlayer(0);
+                if (((Property) tile).getOwner() == player) {
+                    mortgage.setVisible(true);
+                    upgrade.setVisible(true);
+                } else{
+                    mortgage.setVisible(false);
+                    upgrade.setVisible(false);
+                }
+            }
+
+
+
+
+        }else if(Objects.equals(input.getFirst(), "Railroad")){
+
             Image image = new Image("/fxml/propImg/" + 11 + ".png");
             clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: Railroad");
             clickedOwner.setText("Owner: " + input.get(2));
             clickedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
-            clickedRent.setText("Rent: " + input.get(3));
-            clickedUpgrade.setText("Note: Rent Scales with Ownership");
-            clickedUpgradeRent.setText("1RR:$50, 2RR's:$100,\n3RR's:$150, 4RR's:$200");                         //need
+            clickedRent.setText("Cost: " + input.get(3));
+            clickedUpgrade.setText("Rent Scales with Ownership");
+            clickedUpgradeRent.setText("1RR: $50, 2RR's: $100,\n3RR's: $150, 4RR's: $200");
             clickedMortgaged.setText(input.get(4));
             clickedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
             clickedMortgageValue.setText("Worth  When Mortgaged.");               //need
-            mortgage.setVisible(true);
-            upgrade.setVisible(true);
-        }else if(input.getFirst() == "Utility"){
-            if(input.get(1) == "U1"){
-                Image image = new Image("/fxml/propImg/" + 10 + ".png");
-                clickImg.setImage(image);
-            }else{
-                Image image = new Image("/fxml/propImg/" + 14 + ".png");
-                clickImg.setImage(image);
+
+            if(((Railroad) tile).isOwned()){
+                Player player = board.getPlayer(0);
+                if (((Railroad) tile).getOwner() == player) {
+                    mortgage.setVisible(true);
+                    upgrade.setVisible(true);
+                } else{
+                    mortgage.setVisible(false);
+                    upgrade.setVisible(false);
+                }
             }
+
+        }else if(Objects.equals(input.getFirst(), "Utility")){
+
+            Image image;
+            if(Objects.equals(input.get(1), "U1")){
+                image = new Image("/fxml/propImg/" + 10 + ".png");
+            }else{
+                image = new Image("/fxml/propImg/" + 14 + ".png");
+            }
+            clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: Utility");
-            clickedOwner.setText("Owner: " + input.get(2));
+            clickedOwner.setText("Owner: " + input.get(2) + "\n Cost: " + input.get(3));
             clickedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
             clickedRent.setText("Rent is Based on Roll: ");
             clickedUpgrade.setText("With One Utility 4* the Dice Roll");
-            clickedUpgradeRent.setText("With Both Utility 10* the Dice Roll");          //need
+            clickedUpgradeRent.setText("With Both Utility 10* the Dice Roll");
             clickedMortgaged.setText(input.get(4));
             clickedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
             clickedMortgageValue.setText("Worth  When Mortgaged.");                     //need
-            mortgage.setVisible(true);
-            upgrade.setVisible(true);
-        }else if(input.getFirst() == "Go To Jail"){
+
+            if(((Utility) tile).isOwned()){
+                Player player = board.getPlayer(0);
+                if (((Utility) tile).getOwner() == player) {
+                    mortgage.setVisible(true);
+                    upgrade.setVisible(true);
+                } else{
+                    mortgage.setVisible(false);
+                    upgrade.setVisible(false);
+                }
+            }
+
+        }else if(Objects.equals(input.getFirst(), "Go To Jail")){
+
             Image image = new Image("/fxml/propImg/" + 15 + ".png");
             clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
@@ -250,9 +423,12 @@ public class Controller {
             clickedMortgaged.setText("");
             clickedMortgageCost.setText("");
             clickedMortgageValue.setText("");
+
             mortgage.setVisible(false);
             upgrade.setVisible(false);
-        }else if(input.getFirst() == "Go"){
+
+        }else if(Objects.equals(input.getFirst(), "Go")){
+
             Image image = new Image("/fxml/propImg/" + 8 + ".png");
             clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
@@ -265,10 +441,12 @@ public class Controller {
             clickedMortgaged.setText("");
             clickedMortgageCost.setText("");
             clickedMortgageValue.setText("");
+
             mortgage.setVisible(false);
             upgrade.setVisible(false);
         }
-        else if(input.getFirst() == "Jail"){
+        else if(Objects.equals(input.getFirst(), "Jail")){
+
             Image image = new Image("/fxml/propImg/" + 16 + ".png");
             clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
@@ -281,14 +459,18 @@ public class Controller {
             clickedMortgaged.setText("");
             clickedMortgageCost.setText("");
             clickedMortgageValue.setText("");
+
             mortgage.setVisible(false);
             upgrade.setVisible(false);
-        }else{
+
+        }else     //to-do: update with tax, chest, chance, free parking once working
+        {
+
             Image image = new Image("/fxml/propImg/" + 17 + ".png");
             clickImg.setImage(image);
-            clickedAddress.setText("Name: Default");
-            clickedSet.setText("");
-            clickedOwner.setText("");
+            clickedAddress.setText("Default Tile");
+            clickedSet.setText("Shouldn't be Shown");
+            clickedOwner.setText("Or Buy House");
             clickedOwnersOthers.setText("");
             clickedRent.setText("");
             clickedUpgrade.setText("");
@@ -296,10 +478,27 @@ public class Controller {
             clickedMortgaged.setText("");
             clickedMortgageCost.setText("");
             clickedMortgageValue.setText("");
+
             mortgage.setVisible(false);
             upgrade.setVisible(false);
         }
+        if(position == 40){
+            Image image = new Image("/fxml/propImg/" + 17 + ".png");
+            clickImg.setImage(image);
+            clickedAddress.setText("Click a Tile to get Information");
+            clickedSet.setText("Or Mortgage and Unmortgage");
+            clickedOwner.setText("Or Buy House if you own it");
+            clickedOwnersOthers.setText("");
+            clickedRent.setText("");
+            clickedUpgrade.setText("");
+            clickedUpgradeRent.setText("");
+            clickedMortgaged.setText("");
+            clickedMortgageCost.setText("");
+            clickedMortgageValue.setText("");
 
+            mortgage.setVisible(false);
+            upgrade.setVisible(false);
+        }
     }
 
     // These are hooked up to the buttons for testing/development
@@ -314,26 +513,32 @@ public class Controller {
             System.out.println("bad relative move");
         }
         board.relativeMove(board.getPlayers().get(player),spaces);
+        updateLandedInfo(board.getPlayer(0).getPosition());
     }
 
     // it might make sense to move some/all of roll() and endTurn() to board
 
     @FXML
     private void roll() {
-        // checks if current player can roll dice if so rolls 2 random numbers
-        // moves them there and updates the text and makes a popup
-        //  to-do: call land $200 for go on maybe move to board
         int state = 0;      // type of roll normal, dubs etc
         Player currentPlayer = board.getPlayers().getFirst();
         if (currentPlayer.getRolls() > 0){
             Random random = new Random();
             int die1 = random.nextInt(6 - 1 + 1) + 1;
             int die2 = random.nextInt(6 - 1 + 1) + 1;
+            int total = die1 + die2;
+            if(!currentPlayer.isJailed() && currentPlayer.getPosition() + total >= 40){
+                PopupManager.showPopup("Passed Go Collect $200");
+                currentPlayer.addMoney(200);
+            }
+
             if (die1 == die2){
-                // get out of jail state 4 ?
+                if(currentPlayer.isJailed()){
+                    currentPlayer.releaseFromJail();
+                    PopupManager.showPopup("You rolled doubles get out of jail." );
+                }
                 state = 1;
                 if (currentPlayer.getDubs() == 2){
-                    // 3rd time rolling dubs
                     currentPlayer.setDubs(0);
                     PopupManager.showPopup("You rolled 3 doubles in a row go to jail." );
                     return;
@@ -341,14 +546,15 @@ public class Controller {
                 currentPlayer.setDubs(currentPlayer.getDubs()+1);
             }
             updateRoll(die1, die2, state);
-            board.relativeMove(board.getPlayers().getFirst(),die1+die2);
+            board.relativeMove(board.getPlayers().getFirst(),total);
             currentPlayer.setRolls(currentPlayer.getRolls()-(1-state));
-            PopupManager.showPopup("You landed on " + currentPlayer.getPosition());
         }else{
             updateRoll(0, 0, 2);
         }
         int position = board.getPlayers().getFirst().getPosition();
-        updatePositionInfo(board.getTile(position).getTileInfo());
+        Tile tile = board.getTile(position);
+        updateLandedInfo(position);
+        tile.landOn(currentPlayer);
     }
 
     @FXML
@@ -360,13 +566,18 @@ public class Controller {
         currentPlayer.setRolls(currentPlayer.getRolls()+1);
         list.add(currentPlayer);
         currentPlayer.setDubs(0);
-        // countdown jail sentence
+        if(currentPlayer.jailTime() == 1){
+            currentPlayer.releaseFromJail();
+        }else {
+            currentPlayer.setJailTime(currentPlayer.jailTime() - 1);
+        }
+        updateLandedInfo(currentPlayer.getPosition());
     }
 
     @FXML
     private void updateRoll(int die1, int die2,int state) {
         // update roll display
-        // to-do: add images
+        // to-do2: add images
         int roll = die1 + die2;
         switch (state){
             case 0:// normal
@@ -382,12 +593,20 @@ public class Controller {
         }
     }
 
-    private void updatePositionInfo(ArrayList<String> input ){
-    // update position display
-        if(input.getFirst() == "Property"){
+    private void updateLandedInfo(int position ){
+        landedInteract.setVisible(false);
+        landedUpgradeBtn.setVisible(false);
+
+        ArrayList<String> input = board.getTile(position).getTileInfo();
+        Tile tile = board.getTile(position);
+        Player player = board.getPlayers().getFirst();
+
+        // update position display
+        if(Objects.equals(input.getFirst(), "Property")){
+            Property property = (Property) tile;
             Tile.Colors[] colors =  Tile.Colors.values();
             for (int i = 0; i < colors.length; i++){
-                if (input.get(5) == colors[i].toString()){
+                if (Objects.equals(input.get(5), colors[i].toString())){
                     Image image = new Image("/fxml/propImg/" + i + ".png");
                     landedImg.setImage(image);
                 }
@@ -397,39 +616,76 @@ public class Controller {
             landedOwner.setText("Owner: " + input.get(2));
             landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
             landedRent.setText("Current Rent: " + input.get(3));
-            landedUpgrade.setText("Upgrade Cost: " + input.get(4));
+            if(property.isOwned()){
+                landedUpgrade.setText("Upgrade Cost: " + input.get(4));
+            }else{
+                landedUpgrade.setText("Buy Cost: " + input.get(4));
+            }
             landedUpgradeRent.setText("Rent After Upgrade: ");                         //need
             landedMortgaged.setText(input.get(6));
             landedMortgageCost.setText("Costs " + input.get(7) + " to Unmortgage.");
             landedMortgageValue.setText("Worth  When Mortgaged.");               //need
-            payRent.setVisible(true);
-            buy.setVisible(true);
-        }else if(input.getFirst() == "Railroad"){
+
+            // update and show buttons
+            if(property.getOwner() == player){
+                if(property.isMortgaged()){
+                    landedInteract.setText("Unmortgage");
+                }else{
+                    landedInteract.setText("Mortgage");
+                }
+                landedUpgradeBtn.setText("Upgrade");
+                landedInteract.setVisible(true);
+                landedUpgradeBtn.setVisible(true);
+            }else if (property.isOwned()){
+                landedInteract.setText("Pay Rent");
+                landedInteract.setVisible(true);
+            }else{
+                landedInteract.setText("Buy");
+                landedInteract.setVisible(true);
+            }
+
+        }else if(Objects.equals(input.getFirst(), "Railroad")){
+            Railroad railroad = ((Railroad)tile);
             Image image = new Image("/fxml/propImg/" + 11 + ".png");
             landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
             landedSet.setText("Set: Railroad");
             landedOwner.setText("Owner: " + input.get(2));
             landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
-            landedRent.setText("Rent: " + input.get(3));
-            landedUpgrade.setText("Note: Rent Scales with Ownership");
-            landedUpgradeRent.setText("1RR:$50, 2RR's:$100,\n3RR's:$150, 4RR's:$200");                         //need
+            landedRent.setText("Cost: " + input.get(3));
+            landedUpgrade.setText("Rent Scales with Ownership");
+            landedUpgradeRent.setText("1RR: $50, 2RR's: $100,\n3RR's: $150, 4RR's: $200");                         //need
             landedMortgaged.setText(input.get(4));
             landedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
             landedMortgageValue.setText("Worth  When Mortgaged.");               //need
-            payRent.setVisible(true);
-            buy.setVisible(true);
-        }else if(input.getFirst() == "Utility"){
-            if(input.get(1) == "U1"){
-                Image image = new Image("/fxml/propImg/" + 10 + ".png");
-                landedImg.setImage(image);
+
+            if(railroad.getOwner() == player){
+                if(railroad.isMortgaged()){
+                    landedInteract.setText("Unmortgage");
+                    landedInteract.setVisible(true);
+                }else{
+                    landedInteract.setText("Mortgage");
+                    landedInteract.setVisible(true);
+                }
+            }else if (railroad.isOwned()){
+                landedInteract.setText("Pay Rent");
+                landedInteract.setVisible(true);
             }else{
-                Image image = new Image("/fxml/propImg/" + 14 + ".png");
-                landedImg.setImage(image);
+                landedInteract.setText("Buy");
+                landedInteract.setVisible(true);
             }
+        }else if(Objects.equals(input.getFirst(), "Utility")){
+            Utility utility = ((Utility)tile);
+            Image image;
+            if(Objects.equals(input.get(1), "U1")){
+                image = new Image("/fxml/propImg/" + 10 + ".png");
+            }else{
+                image = new Image("/fxml/propImg/" + 14 + ".png");
+            }
+            landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
             landedSet.setText("Set: Utility");
-            landedOwner.setText("Owner: " + input.get(2));
+            landedOwner.setText("Owner: " + input.get(2) + "\n Cost: " + input.get(3));
             landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
             landedRent.setText("Rent is Based on Roll: " + input.get(3));               // may not work
             landedUpgrade.setText("With One Utility 4* the Dice Roll");
@@ -437,9 +693,25 @@ public class Controller {
             landedMortgaged.setText(input.get(4));
             landedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
             landedMortgageValue.setText("Worth  When Mortgaged.");                     //need
-            payRent.setVisible(true);
-            buy.setVisible(true);
-        }else if(input.getFirst() == "Go To Jail"){
+
+            // update and show buttons
+            if(utility.getOwner() == player){
+                if(utility.isMortgaged()){
+                    landedInteract.setText("Unmortgage");
+                    landedInteract.setVisible(true);
+                }else{
+                    landedInteract.setText("Mortgage");
+                    landedInteract.setVisible(true);
+                }
+            }else if (utility.isOwned()){
+                landedInteract.setText("Pay Rent");
+                landedInteract.setVisible(true);
+            }else{
+                landedInteract.setText("Buy");
+                landedInteract.setVisible(true);
+            }
+
+        }else if(Objects.equals(input.getFirst(), "Go To Jail")){
             Image image = new Image("/fxml/propImg/" + 15 + ".png");
             landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
@@ -452,9 +724,12 @@ public class Controller {
             landedMortgaged.setText("");
             landedMortgageCost.setText("");
             landedMortgageValue.setText("");
-            payRent.setVisible(false);
-            buy.setVisible(false);
-        }else if(input.getFirst() == "Go"){
+
+            // update and show buttons
+            landedInteract.setText("Go To Jail");
+            landedInteract.setVisible(true);
+
+        }else if(Objects.equals(input.getFirst(), "Go")){
             Image image = new Image("/fxml/propImg/" + 8 + ".png");
             landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
@@ -467,9 +742,8 @@ public class Controller {
             landedMortgaged.setText("");
             landedMortgageCost.setText("");
             landedMortgageValue.setText("");
-            payRent.setVisible(false);
-            buy.setVisible(false);
-        }else if(input.getFirst() == "Jail"){
+
+        }else if(Objects.equals(input.getFirst(), "Jail")){
             Image image = new Image("/fxml/propImg/" + 16 + ".png");
             landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
@@ -478,17 +752,17 @@ public class Controller {
             landedOwnersOthers.setText(input.get(4));
             landedRent.setText(input.get(5));
             landedUpgrade.setText(input.get(6));
-            landedUpgradeRent.setText("");
-            landedMortgaged.setText("");
+            landedUpgradeRent.setText("You Will Be Released in ");
+            landedMortgaged.setText(player.jailTime() + "Turns");
             landedMortgageCost.setText("");
             landedMortgageValue.setText("lol you in jail");
-            payRent.setVisible(false);
-            buy.setVisible(false);
-        }else{
+
+        }else  //to-do: update with tax, chest, chance, free parking once working
+        {
             Image image = new Image("/fxml/propImg/" + 17 + ".png");
             landedImg.setImage(image);
-            landedAddress.setText("Name: Default");
-            landedSet.setText("");
+            landedAddress.setText("Land on a Tile to");
+            landedSet.setText("Get Information or Interact");
             landedOwner.setText("");
             landedOwnersOthers.setText("");
             landedRent.setText("");
@@ -497,8 +771,6 @@ public class Controller {
             landedMortgaged.setText("");
             landedMortgageCost.setText("");
             landedMortgageValue.setText("");
-            payRent.setVisible(false);
-            buy.setVisible(false);
         }
     }
 
@@ -562,7 +834,7 @@ public class Controller {
             ArrayList<Player> players = StateManager.loadGame(selectedFile.getAbsolutePath());
             this.board = new Board(imageView);
             initializePlayers(players);
-            updateTokenPositions();
+            updateIconPositions();
         } else {
             System.out.println("File selection cancelled.");
         }

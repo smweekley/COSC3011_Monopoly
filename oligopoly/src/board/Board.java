@@ -1,14 +1,13 @@
 package board;
 
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
+
 import player.Player;
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Circle;
 import javafx.scene.image.ImageView;
 
-import java.awt.*;
+
 import java.util.ArrayList;
 
 import tile.*;
@@ -44,8 +43,7 @@ public class Board {
     public Tile getTile(int tile) {return tiles.get(tile);}
 
 
-    // used for testing land on / click on not final at all
-    // plz make a real version of this
+    // used for testing not final at all
     public void initBoard(){
         Tile.Colors[] colors =  Tile.Colors.values();
         for (int i = 0; i < 41; i++){
@@ -54,17 +52,16 @@ public class Board {
             int house = (i*100);
             for (int j = 0; j < rents.length; j++){ rents[j] = rents[j]*i; }
             Tile.Colors color = colors[i/6];
+            Tile nextTile;
             if ( i == 1 ){
-                Tile nextTile = new Go(20);
-                tiles.add(nextTile);
+                nextTile = new Utility(100, "da");
             }else{
-                Tile nextTile = new Property("name",price,rents,house,color);
-                tiles.add(nextTile);
+                nextTile = new Property("name", price, rents, house, color, i);
             }
+            tiles.add(nextTile);
         }
     }
-    // used for testing land on / click on not final at all
-    // plz make a real version of this
+    // used for testing not final at all
 
 
     //will need updating
@@ -106,6 +103,7 @@ public class Board {
     // Absolute move (move player x to position y where position 0 is go 1 is next etc 40 is "in jail")
     public void movePlayerToPosition(Player player, int position) {
         // Get the current bounds of the image within the ImageView
+
         Bounds imageBounds = imageView.getBoundsInParent();
         double imageX = imageBounds.getMinX();
         double imageY = imageBounds.getMinY();
@@ -125,6 +123,9 @@ public class Board {
         token.setLayoutY(tokenY);
         player.setPosition(position);
     }
+
+
+
 
     // relitve move (move player x, y spaces)
     public void relativeMove(Player player, int spaces) {
@@ -188,7 +189,7 @@ public class Board {
             if (x > 900) return (int) Math.round((y - 200) / EDGE_OFFSET) + 21;
 
             // Bottom edge (positions 31-39)
-            if (y > 900) return (int) Math.round((880 - x) / EDGE_OFFSET) + 31;
+            if (y > 930) return (int) Math.round((880 - x) / EDGE_OFFSET) + 31;
             // middle
             return 40;
         }
