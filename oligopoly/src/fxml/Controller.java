@@ -321,17 +321,17 @@ public class Controller {
             clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: " + input.get(1).charAt(0));
             clickedOwner.setText("Owner: " + input.get(2));
-            clickedOwnersOthers.setText("With Others in Set: ");                        //need
-            clickedRent.setText("Current Rent: " + input.get(3));
+            clickedOwnersOthers.setText(input.get(8));                        //need
+            clickedRent.setText("Current Rent: $" + input.get(3));
             if(((Property) tile).isOwned()){
-                clickedUpgrade.setText("Upgrade Cost: " + input.get(4));
+                clickedUpgrade.setText("Upgrade Cost: $" + input.get(4));
             }else{
-                clickedUpgrade.setText("Buy Cost: " + input.get(4));
+                clickedUpgrade.setText("Buy Cost: $" + input.get(4));
             }
-            clickedUpgradeRent.setText("Rent After Upgrade: ");                         //need
+            clickedUpgradeRent.setText("Rent After Upgrade: $"+ input.get(10));
             clickedMortgaged.setText(input.get(6));
-            clickedMortgageCost.setText("Costs " + input.get(7) + " to Unmortgage.");
-            clickedMortgageValue.setText("Worth  When Mortgaged.");               //need
+            clickedMortgageCost.setText("Costs $" + input.get(9) + " to Unmortgage.");
+            clickedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             if(Objects.equals(input.get(6), "This property is mortgaged.")){
                 mortgage.setText("Unmortgage");
@@ -359,13 +359,13 @@ public class Controller {
             clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: Railroad");
             clickedOwner.setText("Owner: " + input.get(2));
-            clickedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
-            clickedRent.setText("Cost: " + input.get(3));
+            clickedOwnersOthers.setText(input.get(6));                        //not imp yet
+            clickedRent.setText("Cost: $" + input.get(3));
             clickedUpgrade.setText("Rent Scales with Ownership");
             clickedUpgradeRent.setText("1RR: $50, 2RR's: $100,\n3RR's: $150, 4RR's: $200");
             clickedMortgaged.setText(input.get(4));
             clickedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
-            clickedMortgageValue.setText("Worth  When Mortgaged.");               //need
+            clickedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             if(((Railroad) tile).isOwned()){
                 Player player = board.getPlayer(0);
@@ -389,14 +389,14 @@ public class Controller {
             clickImg.setImage(image);
             clickedAddress.setText("Name: " + input.get(1));
             clickedSet.setText("Set: Utility");
-            clickedOwner.setText("Owner: " + input.get(2) + "\n Cost: " + input.get(3));
-            clickedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
+            clickedOwner.setText("Owner: " + input.get(2) + "\n Cost: $" + input.get(3));
+            clickedOwnersOthers.setText(input.get(6));                        //not imp yet
             clickedRent.setText("Rent is Based on Roll: ");
             clickedUpgrade.setText("With One Utility 4* the Dice Roll");
             clickedUpgradeRent.setText("With Both Utility 10* the Dice Roll");
             clickedMortgaged.setText(input.get(4));
             clickedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
-            clickedMortgageValue.setText("Worth  When Mortgaged.");                     //need
+            clickedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             if(((Utility) tile).isOwned()){
                 Player player = board.getPlayer(0);
@@ -611,20 +611,20 @@ public class Controller {
                     landedImg.setImage(image);
                 }
             }
-            landedAddress.setText("Address: " + input.get(1).charAt(1));
+            landedAddress.setText("Name: " + input.get(1));
             landedSet.setText("Set: " + input.get(1).charAt(0));
             landedOwner.setText("Owner: " + input.get(2));
-            landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
-            landedRent.setText("Current Rent: " + input.get(3));
+            landedOwnersOthers.setText(input.get(8));                        //not imp yet
+            landedRent.setText("Current Rent: $" + input.get(3));
             if(property.isOwned()){
-                landedUpgrade.setText("Upgrade Cost: " + input.get(4));
+                landedUpgrade.setText("Upgrade Cost: $" + input.get(4));
             }else{
-                landedUpgrade.setText("Buy Cost: " + input.get(4));
+                landedUpgrade.setText("Buy Cost: $" + input.get(4));
             }
-            landedUpgradeRent.setText("Rent After Upgrade: ");                         //need
+            landedUpgradeRent.setText("Rent After Upgrade: $"+ input.get(10));
             landedMortgaged.setText(input.get(6));
-            landedMortgageCost.setText("Costs " + input.get(7) + " to Unmortgage.");
-            landedMortgageValue.setText("Worth  When Mortgaged.");               //need
+            landedMortgageCost.setText("Costs $" + input.get(9) + " to Unmortgage.");
+            landedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             // update and show buttons
             if(property.getOwner() == player){
@@ -651,13 +651,13 @@ public class Controller {
             landedAddress.setText("Name: " + input.get(1));
             landedSet.setText("Set: Railroad");
             landedOwner.setText("Owner: " + input.get(2));
-            landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
-            landedRent.setText("Cost: " + input.get(3));
+            landedOwnersOthers.setText(input.get(6));                        //not imp yet
+            landedRent.setText("Cost: $" + input.get(3));
             landedUpgrade.setText("Rent Scales with Ownership");
             landedUpgradeRent.setText("1RR: $50, 2RR's: $100,\n3RR's: $150, 4RR's: $200");                         //need
             landedMortgaged.setText(input.get(4));
-            landedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
-            landedMortgageValue.setText("Worth  When Mortgaged.");               //need
+            landedMortgageCost.setText("Costs $" + input.get(5) + " to Unmortgage.");
+            landedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             if(railroad.getOwner() == player){
                 if(railroad.isMortgaged()){
@@ -685,14 +685,14 @@ public class Controller {
             landedImg.setImage(image);
             landedAddress.setText("Name: " + input.get(1));
             landedSet.setText("Set: Utility");
-            landedOwner.setText("Owner: " + input.get(2) + "\n Cost: " + input.get(3));
-            landedOwnersOthers.setText("With Others in Set: ");                        //not imp yet
+            landedOwner.setText("Owner: " + input.get(2) + "\n Cost: $" + input.get(3));
+            landedOwnersOthers.setText(input.get(6));
             landedRent.setText("Rent is Based on Roll: " + input.get(3));               // may not work
             landedUpgrade.setText("With One Utility 4* the Dice Roll");
-            landedUpgradeRent.setText("With Both Utility 10* the Dice Roll");          //need
+            landedUpgradeRent.setText("With Both Utility 10* the Dice Roll");
             landedMortgaged.setText(input.get(4));
-            landedMortgageCost.setText("Costs " + input.get(5) + " to Unmortgage.");
-            landedMortgageValue.setText("Worth  When Mortgaged.");                     //need
+            landedMortgageCost.setText("Costs $" + input.get(5) + " to Unmortgage.");
+            landedMortgageValue.setText("Worth $"+ input.get(7) +" When Mortgaged.");
 
             // update and show buttons
             if(utility.getOwner() == player){

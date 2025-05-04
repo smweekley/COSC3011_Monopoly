@@ -137,8 +137,10 @@ public class Railroad extends Tile{
                 info.add("Player does not own any other Railroads.");
             }
         } else {
-            info.add("Tile is unowned. No Railroad ownership information available.");
+            info.add("Tile is unowned.");
         }
+
+        info.add(String.valueOf((buyCost / 2)));
 
         return info;
     }

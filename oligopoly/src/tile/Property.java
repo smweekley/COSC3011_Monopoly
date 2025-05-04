@@ -25,7 +25,6 @@ public class Property extends Tile{
     private int purchasePrice;
     private int houseCount;
     private int hotelCount;
-    private int index;
     private int houseCost;  // $50 for brown and light blue, $100 for pink and orange, $150 for red and yellow, $200 for green and dark blue
     private boolean propertyOwned;
     private ArrayList<Property> colorSet; // Properties of same color
@@ -101,6 +100,11 @@ public class Property extends Tile{
     public int getRent() {
         int index = hotelCount > 0 ? 5 : houseCount;
         return rent[index];
+    }
+
+    public int getNextRent() {
+        int index = hotelCount > 0 ? 5 : houseCount;
+        return rent[index+1];
     }
 
     public void setOwner(Player player) {
@@ -272,6 +276,7 @@ public class Property extends Tile{
         ArrayList<String> info = new ArrayList<String>();
         int propertiesOwnedInSet = 0;
         int unmortgageCost = (int) ((purchasePrice / 2) * 1.10);
+        int mortgageCost = (purchasePrice / 2);
 
         info.add("Property");
         info.add(getName());
@@ -297,7 +302,7 @@ public class Property extends Tile{
             info.add("This property is not mortgaged.");
         }
         
-        info.add("$" + unmortgageCost);
+        info.add(String.valueOf(unmortgageCost));
 
         StringBuilder propSummary = new StringBuilder();
         if (isOwned()) {
@@ -319,7 +324,9 @@ public class Property extends Tile{
                 info.add("Property Owner Also Owns: None of the other properties in the set.");
             }
         }
-
+        info.add("Not Owned: no info");
+        info.add(String.valueOf(mortgageCost));
+        info.add(String.valueOf(getNextRent()));
         return info;
     }
 }

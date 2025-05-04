@@ -96,8 +96,10 @@ public class Utility extends Tile{
                 info.add("Property owner does not own any other utilities.");
             }
         } else {
-            info.add("Tile is unowned. No Utility ownership information available.");
+            info.add("Tile is unowned.");
         }
+
+        info.add(String.valueOf((buyCost / 2)));
 
         return info;
     }
