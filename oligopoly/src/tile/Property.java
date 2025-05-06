@@ -7,12 +7,14 @@ import player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import fxml.PopupManager;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.util.Collections;
@@ -114,15 +116,19 @@ public class Property extends Tile{
     }
     
     // Buy Property
-    public boolean buyProperty(Player player) {  //to-do:standardize
+    public void buyProperty(Player player) {  //to-do:standardize
         if (propertyOwned == false && player.getMoney() >= purchasePrice) {
             player.reduceMoney(purchasePrice);
             setOwner(player);
             player.addProperty(this);
-            System.out.println(player.getName() + " bought " + getName() + " for $" + purchasePrice);    // Replace with GUI stuff
-            return true;
+            PopupManager.showPopup(player.getName() + " bought " + getName() + " for $" + purchasePrice);
         }
-        return false;
+        else if (propertyOwned == true) {
+            PopupManager.showPopup("This property is already owned.");
+        }
+        else if (propertyOwned == false && player.getMoney() < purchasePrice) {
+            PopupManager.showPopup("You cannot afford to buy this property.");
+        }
     }
 
     // Sell Property (Just goes back to bank)
@@ -133,7 +139,7 @@ public class Property extends Tile{
             propertyOwner.removeProperty(this);
             propertyOwner = null;
             propertyOwned = false;
-            System.out.println(player.getName() + " sold " + getName() + " back to the bank for $" + refundAmount);  // Replace with GUI stuff
+            PopupManager.showPopup(player.getName() + " sold " + getName() + " back to the bank for $" + refundAmount);
         }
     }
 
@@ -143,9 +149,12 @@ public class Property extends Tile{
             int rentAmount = getRent();
             player.reduceMoney(rentAmount);
             propertyOwner.addMoney(rentAmount);
-            System.out.println(player.getName() + " paid $" + rentAmount + " in rent to " + propertyOwner.getName());   // Replace with GUI stuff
+            PopupManager.showPopup(player.getName() + " paid $" + rentAmount + " in rent to " + propertyOwner.getName());
         }
-        else return; // Property is mortgaged, no rent can be collected.
+        else {
+            PopupManager.showPopup("Property is mortgaged, no rent is due!");
+        }
+        return; // Property is mortgaged, no rent can be collected.
     }
 
     // Build house/hotel (should be able to be done by player at any point during their turn regardless of position
@@ -154,22 +163,22 @@ public class Property extends Tile{
     public boolean buyHouse(Player player) {
 
         if (propertyOwner != player) {  // Player doesn't own property
-            System.out.println("You don't own this property.");
+            PopupManager.showPopup("You don't own this property.");
             return false;
         }
 
         if (!ownsFullSet(player)) { // Player doesn't own every property in colorSet
-            System.out.println("You must own all properties of this color set to build houses.");
+            PopupManager.showPopup("You must own all properties of this color set to build houses.");
             return false;
         }
 
         if (hotelCount >= 1) {  // Player already has a hotel
-            System.out.println("This property already has a hotel. You can't build any more.");
+            PopupManager.showPopup("This property already has a hotel. You can'te build any more.");
             return false;
         }
 
         if (player.getMoney() < houseCost) {    // Player is too poor, lmao stay mad wagey
-            System.out.println("You don't have enough money to buy a house.");
+            PopupManager.showPopup("You don't have enough money to buy a house.");
             return false;
         }
 
@@ -181,7 +190,7 @@ public class Property extends Tile{
             if ( buildings > maxHouse ) maxHouse = buildings;
         }
         if ( (this.houseCount + this.hotelCount) > minHouse) {
-            System.out.println("This property must have the least number of houses/hotels to build on it.");
+            PopupManager.showPopup("This property must have the least number of houses/hotels to build on it.");
             return false;
         }
 
@@ -196,9 +205,9 @@ public class Property extends Tile{
         }
 
         if (getHouseCount() >= 1) {
-            System.out.println("A hotel has been built on " + getName() + ".");
+            PopupManager.showPopup("A hotel has been build on " + getName() + ".");
         } else {
-            System.out.println("A house has been built on " + getName() + ". Total houses: " + getHouseCount());
+            PopupManager.showPopup("A house has been built on " + getName() + ". Total houses: " + getHouseCount());
         }
         return true;
     }
@@ -224,7 +233,7 @@ public class Property extends Tile{
         } else if (propertyOwner != player) {
             payRent(player);
         } else {
-            System.out.println(player.getName() + " landed on their own property.");
+            PopupManager.showPopup(player.getName() + " landed on their own property.");
             // Optional: Offer to build houses here or defer to player turn menu
         }
     }
@@ -241,12 +250,7 @@ public class Property extends Tile{
     Button passButton = new Button("Pass");
 
     buyButton.setOnAction(e -> {
-        boolean success = buyProperty(player);
-        if (!success) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "You can't afford this property.");
-            alert.showAndWait();
-        }
-        popup.close();
+        buyProperty(player);
     });
 
     passButton.setOnAction(e -> {

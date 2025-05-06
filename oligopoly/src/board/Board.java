@@ -47,7 +47,7 @@ public class Board {
     public void initBoard(){
         Tile.Colors[] colors =  Tile.Colors.values();
         for (int i = 0; i < 41; i++){
-            int price = (i*1000);
+            int price = (i*100);
             int[] rents = {10, 100, 500, 1000, 1500, 2000};
             int house = (i*100);
             for (int j = 0; j < rents.length; j++){ rents[j] = rents[j]*i; }
