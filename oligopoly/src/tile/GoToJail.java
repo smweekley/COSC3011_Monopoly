@@ -5,6 +5,10 @@ import player.Player;
 
 public class GoToJail extends Tile{
 
+    public GoToJail (String name) {
+        setName(name);
+    }
+
 
     public void landOn(Player player) {
         player.goToJail(3);
@@ -22,9 +26,7 @@ public class GoToJail extends Tile{
         ArrayList<String> info = new ArrayList<>();
         info.add("Go To Jail");
         info.add(getName());
-        info.add("Landing here sends you to Jail.");
-        info.add("Do not pass GO.");
-        info.add("Do not collect $200.");
+        info.add("Landing here sends you to Jail. Do not pass GO. Do not collect $200.");
         return info;
     }
     

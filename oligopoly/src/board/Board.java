@@ -9,6 +9,10 @@ import javafx.scene.image.ImageView;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.text.Utilities;
 
 import tile.*;
 import tile.Tile.Colors;
@@ -43,15 +47,12 @@ public class Board {
 
     public Tile getTile(int tile) {return tiles.get(tile);}
 
-
-    // used for testing not final at all
     public void initBoard(){
-        // I'm just going to hardcode the tiles
         tiles.add(new Go(200));
         tiles.add(new Property("Mediteranian Avenue", 60, new int[]{2,10,30,90,160,250}, 50, Colors.BROWN, 1));
         //tiles.add(new CommunityChest());
         tiles.add(new Property("Baltic Avenue", 60, new int[]{4,20,60,180,320,450}, 50, Colors.BROWN, 3));
-        //tiles.add(new Tax())
+        tiles.add(new Tax("Income Tax", "Uncle Sam wants the juiciest cut, 10% or $200.", false));
         tiles.add(new Railroad("Reading Railroad", 200));
         tiles.add(new Property("Oriental Avenua", 100, new int[]{6,30,90,270,400,550}, 50, Colors.LIGHT_BLUE, 6));
         //tiles.add(new Chance());
@@ -59,53 +60,107 @@ public class Board {
         tiles.add(new Property("Connecticut Avenue", 120, new int[]{8,40,100,300,450,600}, 50, Colors.LIGHT_BLUE, 9));
         tiles.add(new Jail(50, "Jail"));
         tiles.add(new Property("St. Charles Place", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 11));
-        //tiles.add(new Tax());
+        tiles.add(new Utility(150, "Electric Company"))
         tiles.add(new Property("States Avenue", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 13));
         tiles.add(new Property("Virginia Avenue", 160, new int[]{12,60,180,500,700,900}, 100, Colors.PINK, 14));
         tiles.add(new Railroad("Pennsylvania Railroad", 200));
         tiles.add(new Property("St. James Place", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 16));
-        //tiles.add(new CommunityChest());
+        //tiles.add(new CommunityChestTileAdapter());
         tiles.add(new Property("Tennessee Avenue", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 18));
         tiles.add(new Property("New York Avenue", 200, new int[]{16,80,220,600,800,1000}, 100, Colors.ORANGE, 19));
-    }
-    // used for testing not final at all
+        tiles.add(new FreeParking("Free Parking", 20));
+        tiles.add(new Property("Kentucky Avenue", 220, new int[]{18,90,250,700,875,1050}, 150, Colors.RED, 21));
+        //tiles.add(new ChanceTileAdapter());
+        tiles.add(new Property("Indiana Avenue", 220, new int[]{18,90,250,700,875,1050}, 150, Colors.RED, 23));
+        tiles.add(new Property("Illinois Avenue", 240, new int[]{20,110,330,800,975,1150}, 150, Colors.RED, 24));
+        tiles.add(new Railroad("B&O Railroad", 200));
+        tiles.add(new Property("Atlantic Avenue", 260, new int[]{22,110,330,800,975,1150}, 150, Colors.YELLOW, 26));
+        tiles.add(new Property("Ventnor Avenue", 260, new int[]{22,110,330,800,975,1150}, 150, Colors.YELLOW, 27));
+        tiles.add(new Utility(120, "Water Works"));
+        tiles.add(new Property("Marvin Gardens", 280, new int[]{24,120,360,850,1025,1200}, 150, Colors.YELLOW, 29));
+        tiles.add(new GoToJail("Go To Jail!"));
+        tiles.add(new Property("Pacific Avenue", 300, new int[]{26,130,390,900,1100,1275}, 200, Colors.GREEN, 31));
+        tiles.add(new Property("North Carolina Avenue", 300, new int[]{26,130,390,900,1100,1275}, 200, Colors.GREEN, 32));
+        //tiles.add(new CommunityChestTileAdapter())
+        tiles.add(new Property("Pennsylvania Ave", 320, new int[]{28,150,450,1000,1200,1400}, 200, Colors.GREEN, 34));
+        tiles.add(new Railroad("Short Line", 200));
+        //tiles.add(new ChanceTileAdapter());
+        tiles.add(new Property("Park Place", 350, new int[]{35,175,500,1100,1300,1500}, 200, Colors.DARK_BLUE, 36));
+        tiles.add(new Tax("Luxury Tax", "You look too rich, time to pay Uncle Sam.", true));
+        tiles.add(new Property("Boardwalk", 400, new int[]{50,200,600,1400,1700,2000}, 200, Colors.DARK_BLUE, 38));
 
 
-    //will need updating
-    //also Controller.java seems to do some of this already    (line 43-47)
-    //however in the future when we have gui for players selecting their icons
-    //and theyre iteratively added, i think making a list of those players as theyre added
-    //then sending to the new board object via initBoard (referencing Miro) could be useful
-    //public void initBoard(ArrayList<Player> initialPlayers) {
-    //    for(Player player : initPlayers) { 
-    //        addPlayer(player);
-    //    }
-    /*  commented because some of this is not implemented
-        Tile go = new Go();
-        Tile chance = new chanceTile(); 
-        Tile chest = new communityChestTile(); //reuse same references to these types of tile
-        Tile incomeTax = new Tax(50); //no Tax subclass exists, so this is placeholder
-        Tile jail = new Jail();
-        Tile A1 = new Property("A1" , 80 , 50);
-        Tile A2 = new Property("A2" , 120 , 50);
-        Tile B1 = new Property("B1" , 150, 50);
-        Tile B2 = new Property("B2" , 150, 50);
-        Tile B3 = new Property("B3" , 180, 50);
-        Tile X1 = new Railroad("X1" , 200);
-        tiles[0]  = go;
-        tiles[1]  = A1;
-        tiles[2]  = chest;
-        tiles[3]  = A2;
-        tiles[4]  = incomeTax;
-        tiles[5]  = X1
-        tiles[6]  = B1;
-        tiles[7]  = chance;
-        tiles[8]  = B2;
-        tiles[9]  = B3;
-        tiles[10] = jail;
-        //etc
+        // Set color groups
+        List<Property> browns = new ArrayList<>(Arrays.asList(
+            (Property) getTile(1),
+            (Property) getTile(3)
+        ));
+        for (Property prop : browns) {
+            prop.setColorSet(browns);
+        }
+
+        List<Property> lightBlues = new ArrayList<>(Arrays.asList(
+            (Property) getTile(6),
+            (Property) getTile(8),
+            (Property) getTile(9)
+            ));
+            for (Property prop : lightBlues) {
+                prop.setColorSet(lightBlues);
+            }
+            List<Property> pinks = new ArrayList<>(Arrays.asList(
+                (Property) getTile(11),
+                (Property) getTile(13),
+                (Property) getTile(14)
+                ));
+            for (Property prop : pinks) {
+                prop.setColorSet(pinks);
+            }
+
+            List<Property> oranges = new ArrayList<>(Arrays.asList(
+                (Property) getTile(16),
+                (Property) getTile(18),
+                (Property) getTile(19)
+            ));
+            for (Property prop : oranges) {
+                prop.setColorSet(oranges);
+            }
+
+            List<Property> reds = new ArrayList<>(Arrays.asList(
+                (Property) getTile(21),
+                (Property) getTile(23),
+                (Property) getTile(24)
+            ));
+            for (Property prop : reds) {
+                prop.setColorSet(reds);
+            }
+
+            List<Property> yellows = new ArrayList<>(Arrays.asList(
+                (Property) getTile(26),
+                (Property) getTile(27),
+                (Property) getTile(29)
+            ));
+            for (Property prop : yellows) {
+                prop.setColorSet(yellows);
+            }
+
+            List<Property> greens = new ArrayList<>(Arrays.asList(
+                (Property) getTile(31),
+                (Property) getTile(32),
+                (Property) getTile(34)
+            ));
+            for (Property prop : greens) {
+                prop.setColorSet(greens);
+            }
+
+            List<Property> dBlues = new ArrayList<>(Arrays.asList(
+                (Property) getTile(36),
+                (Property) getTile(38)
+            ));
+            for (Property prop : dBlues) {
+                prop.setColorSet(dBlues);
+            }
     }
-    */
+
 
     // Absolute move (move player x to position y where position 0 is go 1 is next etc 40 is "in jail")
     public void movePlayerToPosition(Player player, int position) {
@@ -134,7 +189,7 @@ public class Board {
 
 
 
-    // relitve move (move player x, y spaces)
+    // relative move (move player x, y spaces)
     public void relativeMove(Player player, int spaces) {
         int newPosition = (player.getPosition() + spaces) % 40;
         movePlayerToPosition(player, newPosition);

@@ -53,7 +53,7 @@ public class Property extends Tile{
     // Match properties based on color. Call this AFTER all properties have been constructed
     // example: List<Property> oranges = Arrays.asList(prop1, prop2, prop3)
     //          for ( Property prop : oranges) { prop.setColorSet(oranges); }
-    public void setColorSet(ArrayList<Property> colorSet) {
+    public void setColorSet(List<Property> colorSet) {
         this.colorSet = new ArrayList<Property>(colorSet);
         this.colorSet.remove(this); // Remove self-reference
     }
