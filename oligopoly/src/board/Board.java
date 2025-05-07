@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 
 import tile.*;
+import tile.Tile.Colors;
 
 
 public class Board {
@@ -45,21 +46,27 @@ public class Board {
 
     // used for testing not final at all
     public void initBoard(){
-        Tile.Colors[] colors =  Tile.Colors.values();
-        for (int i = 0; i < 41; i++){
-            int price = (i*100);
-            int[] rents = {10, 100, 500, 1000, 1500, 2000};
-            int house = (i*100);
-            for (int j = 0; j < rents.length; j++){ rents[j] = rents[j]*i; }
-            Tile.Colors color = colors[i/6];
-            Tile nextTile;
-            if ( i == 1 ){
-                nextTile = new Utility(100, "da");
-            }else{
-                nextTile = new Property("name", price, rents, house, color, i);
-            }
-            tiles.add(nextTile);
-        }
+        // I'm just going to hardcode the tiles
+        tiles.add(new Go(200));
+        tiles.add(new Property("Mediteranian Avenue", 60, new int[]{2,10,30,90,160,250}, 50, Colors.BROWN, 1));
+        //tiles.add(new CommunityChest());
+        tiles.add(new Property("Baltic Avenue", 60, new int[]{4,20,60,180,320,450}, 50, Colors.BROWN, 3));
+        //tiles.add(new Tax())
+        tiles.add(new Railroad("Reading Railroad", 200));
+        tiles.add(new Property("Oriental Avenua", 100, new int[]{6,30,90,270,400,550}, 50, Colors.LIGHT_BLUE, 6));
+        //tiles.add(new Chance());
+        tiles.add(new Property("Vermont Avenue", 100, new int[]{6,30,90,270,400,550}, 50, Colors.LIGHT_BLUE, 8));
+        tiles.add(new Property("Connecticut Avenue", 120, new int[]{8,40,100,300,450,600}, 50, Colors.LIGHT_BLUE, 9));
+        tiles.add(new Jail(50, "Jail"));
+        tiles.add(new Property("St. Charles Place", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 11));
+        //tiles.add(new Tax());
+        tiles.add(new Property("States Avenue", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 13));
+        tiles.add(new Property("Virginia Avenue", 160, new int[]{12,60,180,500,700,900}, 100, Colors.PINK, 14));
+        tiles.add(new Railroad("Pennsylvania Railroad", 200));
+        tiles.add(new Property("St. James Place", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 16));
+        //tiles.add(new CommunityChest());
+        tiles.add(new Property("Tennessee Avenue", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 18));
+        tiles.add(new Property("New York Avenue", 200, new int[]{16,80,220,600,800,1000}, 100, Colors.ORANGE, 19));
     }
     // used for testing not final at all
 

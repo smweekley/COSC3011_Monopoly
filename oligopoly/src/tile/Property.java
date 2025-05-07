@@ -223,15 +223,19 @@ public class Property extends Tile{
     }
 
 
-    // Implement mortgage logic
-    // Note: All houses/hotels should be sold for half their purchase value before mortgaging.
+    public void setMortgaged(boolean mortgaged) {
+        this.isMortgaged = mortgaged;
+    }
 
     // Land On Logic
     public void landOn(Player player) {
-        if (!isOwned()) {
+        boolean lmao = false;
+        if (!isOwned() && !lmao) {
             showPurchasePopup(player);
-        } else if (propertyOwner != player) {
+            lmao = true;
+        } else if (propertyOwner != player && !lmao) {
             payRent(player);
+            lmao = true;
         } else {
             PopupManager.showPopup(player.getName() + " landed on their own property.");
             // Optional: Offer to build houses here or defer to player turn menu

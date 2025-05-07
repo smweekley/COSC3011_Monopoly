@@ -283,18 +283,41 @@ public class Controller {
     private void handleMortgage() {
         Player player = board.getPlayers().getFirst();
         Tile tile = board.getTile(displayedTile);
+
+        if(!(tile instanceof Property prop)) return;
+
         if(Objects.equals(mortgage.getText(), "Mortgage")) {
-            //tile.mortgage(player);     //to-do:enable when working
-        }else{
-            //tile.unMortgage(player);    //to-do:enable when working
+            if (prop.getHouseCount() > 0) {
+                PopupManager.showPopup("You must sell houses before mortgaging.");
+                return;
+            }
+            if (!prop.isMortgaged()) {
+                int mortgageAmount = prop.getPurchasePrice() / 2;
+                prop.setMortgaged(true);
+                player.addMoney(mortgageAmount);
+                PopupManager.showPopup("Mortgaged for $" + mortgageAmount);
+            }
+        } else {
+            int unmortgageCost = (int) ((prop.getPurchasePrice() / 2) * 1.10);
+            if (player.getMoney() >= unmortgageCost) {
+                player.reduceMoney(unmortgageCost);
+                prop.setMortgaged(false);
+                PopupManager.showPopup("Unmortgaged for $" + unmortgageCost);
+            } else {
+                PopupManager.showPopup("Not enough money to unmortgage.");
+            }
         }
+        updateLandedInfo(displayedTile);
     }
 
     @FXML
     private void handleUpgrade() {
         Player player = board.getPlayers().getFirst();
         Tile tile = board.getTile(displayedTile);
-        //tile.buyHouse(player);     //to-do:enable when working
+        if ( tile instanceof Property) {
+            ((Property) tile).buyHouse(player);
+            updateIconPositions();
+        }
     }
 
     private void clickDisplayTile(int position){
