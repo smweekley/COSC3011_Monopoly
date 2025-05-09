@@ -15,6 +15,7 @@ import tile.Railroad;
 import tile.Tile;
 import tile.Utility;
 
+import javax.swing.plaf.TreeUI;
 import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,6 +32,7 @@ public class Player {
     private int timeInJail;
     private int rolls;
     private int dubs;
+    private boolean hasJailCard;
 
     public Player(int number, String name, String color) {
         setTokenc(color);
@@ -68,6 +70,18 @@ public class Player {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public void giveJailCard() {
+        this.hasJailCard = true;
+    }
+
+    public void setJailCard(boolean state) {
+        this.hasJailCard = state;
+    }
+
+    public boolean hasJailCard() {
+        return this.hasJailCard;
     }
 
     public String getColor() {

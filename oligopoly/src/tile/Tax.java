@@ -9,9 +9,9 @@ public class Tax extends Tile {
     private String description;
     private boolean luxuryTax;
     public Tax (String name, String desc, boolean luxTax) {
-        setName(name);
-        setDescription(desc);
-        setLuxuryTax(luxTax);
+        this.name = name;
+        this.description = desc;
+        this.luxuryTax = luxTax;
     }
 
     public void setName(String name) { this.name = name; }

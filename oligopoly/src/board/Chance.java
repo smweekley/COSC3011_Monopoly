@@ -1,4 +1,3 @@
-/*
 package board;
 
 import java.util.Random;
@@ -6,215 +5,188 @@ import java.util.Set;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.ArrayDeque;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
+import javafx.scene.image.Image;
+import fxml.PopupManager;
 import player.Player;
 
-the calls used for player in chance are .changePosition(int),
-.getHouse() to get the number of houses that player controls,
-getHotel() to get the number of hotels the player controls,
-changeMoney(int) will send a negative or positive number to be added to the players money,
-getPosition() to get the players current position,
-jailFreeCard() to give the player a get out of jail free card
-toJail() to send them to jail
-the only work that needs done is checking the correct position number to the right property position
-and get the pictures called when the player lands on the space
-
 public class Chance {
-    int[] cards = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    int cardDrawn = 0;
-    Random cardGenerator = new Random();
-    Deque<Integer> chestDeck = new ArrayDeque<>();
-    public CommunityChest() {
-        if (chestDeck.isempty()){ //the shuffle function if the deck is empty
-            Set<Integer> drawnCards = new HashSet<>();
-            while(drawnCards.size() < 15) {
-                int nextCard = cardGenerator.nextInt(15) + 1;
-                if(!drawnCards.contains(nextCard)) {
-                    drawnCards.add(nextCard);
-                    chestDeck.addFirst(nextCard);
+    private final Random cardGenerator = new Random();
+    private final Deque<Integer> chestDeck = new ArrayDeque<>();
+    private int cardDrawn = 0;
+    private static List<Player> allPlayers; // Reference to all players in the game
+
+    // Static method to set the player list (call this during game setup)
+    public static void setAllPlayers(List<Player> players) {
+        allPlayers = new ArrayList<>(players);
+    }
+
+    // Card action callback interface
+    public interface CardActionCallback {
+        void onCardActionComplete(Player player);
+    }
+
+    public Chance() {
+        shuffleDeck();
+    }
+
+    private void shuffleDeck() {
+        chestDeck.clear();
+        Set<Integer> drawnCards = new HashSet<>();
+        while (drawnCards.size() < 15) {
+            int nextCard = cardGenerator.nextInt(15) + 1;
+            if (drawnCards.add(nextCard)) {
+                chestDeck.addFirst(nextCard);
+            }
+        }
+    }
+
+    public void drawCard(Player current, CardActionCallback callback) {
+        if (chestDeck.isEmpty()) {
+            shuffleDeck();
+        }
+        cardDrawn = chestDeck.pop();
+        
+        // First show the card image
+        String imagePath = getCardImagePath(cardDrawn);
+        Image cardImage = new Image("File:" + imagePath);
+        
+        PopupManager.showPopup(cardImage);
+        
+        // Apply the card effect
+        applyCardEffect(cardDrawn, current);
+        
+        // Notify that action is complete
+        if (callback != null) {
+            callback.onCardActionComplete(current);
+        }
+    }
+    
+    public int getLastCardDrawn() {
+        return cardDrawn;
+    }
+    
+    private String getCardImagePath(int cardId) {
+        return "src/board/chance/" + getCardImageName(cardId);
+    }
+    
+    private String getCardImageName(int cardId) {
+        return switch (cardId) {
+            case 1 -> "advanceToGo.jpg";
+            case 2 -> "advanceStCharles.jpg";
+            case 3 -> "repairs.jpg";
+            case 4 -> "advanceBoardWalk.jpg";
+            case 5 -> "advanceRailroad.jpg";
+            case 6 -> "advanceIllinois.jpg";
+            case 7 -> "advanceUtility.jpg";
+            case 8 -> "jailFree.jpg";
+            case 9 -> "toJail.jpg";
+            case 10 -> "advanceReading.jpg";
+            case 11 -> "buildingLoan.jpg";
+            case 12 -> "bankDividend.jpg";
+            case 13 -> "goBack.jpg";
+            case 14 -> "electedChairman.jpg";
+            case 15 -> "poorTax.jpg";
+            default -> "default.jpg";
+        };
+    }
+
+    private void applyCardEffect(int card, Player current) {
+        switch (card) {
+            case 1 -> advanceToGo(current);
+            case 2 -> advanceStCharles(current);
+            case 3 -> repairs(current);
+            case 4 -> advanceBoardWalk(current);
+            case 5 -> advanceRailroad(current);
+            case 6 -> advanceIllinois(current);
+            case 7 -> advanceUtility(current);
+            case 8 -> jailFree(current);
+            case 9 -> toJail(current);
+            case 10 -> advanceReading(current);
+            case 11 -> buildingLoan(current);
+            case 12 -> bankDividend(current);
+            case 13 -> goBack(current);
+            case 14 -> electedChairman(current);
+            case 15 -> poorTax(current);
+        }
+    }
+
+    // Card effect methods
+    private void advanceToGo(Player current) {
+        current.setPosition(0);
+    }
+
+    private void advanceStCharles(Player current) {
+        current.setPosition(10);
+    }
+
+    private void repairs(Player current) {
+        int total = -25 * current.houseCount() - 100 * current.hotelCount();
+        current.changeMoney(total);
+    }
+
+    private void advanceBoardWalk(Player current) {
+        current.setPosition(37);
+    }
+
+    private void advanceRailroad(Player current) {
+        int pos = current.getPosition();
+        if (pos < 5 || pos > 35) current.setPosition(5);
+        else if (pos < 15) current.setPosition(15);
+        else if (pos < 25) current.setPosition(25);
+        else current.setPosition(35);
+    }
+
+    private void advanceIllinois(Player current) {
+        current.setPosition(17);
+    }
+
+    private void advanceUtility(Player current) {
+        int pos = current.getPosition();
+        if (pos < 12 || pos >= 28) current.setPosition(12);
+        else current.setPosition(28);
+    }
+
+    private void jailFree(Player current) {
+        current.giveJailCard();
+    }
+
+    private void toJail(Player current) {
+        current.goToJail(3);
+    }
+
+    private void advanceReading(Player current) {
+        current.setPosition(15);
+    }
+
+    private void buildingLoan(Player current) {
+        current.changeMoney(-150);
+    }
+
+    private void bankDividend(Player current) {
+        current.changeMoney(50);
+    }
+
+    private void goBack(Player current) {
+        current.setPosition(current.getPosition() - 3);
+    }
+
+    private void electedChairman(Player current) {
+        // Now uses the allPlayers reference to affect all players
+        if (allPlayers != null) {
+            for (Player p : allPlayers) {
+                if (p != current) {
+                    current.changeMoney(-50);
+                    p.changeMoney(50);
                 }
             }
         }
     }
 
-    public void drawCard(Player current) {
-        if (!chestDeck.isEmpty()) {
-            cardDrawn = chestDeck.pop();
-            callCardEffect(cardDrawn, current);
-        } else {
-            communityChest();
-        }
-    }
-
-    private void callCardEffect(int card, Player current) {
-        switch (card) {
-            case 1:
-                advanceToGo(current);
-                break;
-            case 2:
-                advanceStCharles(current);
-                break;
-            case 3:
-                repairs(current);
-                break;
-            case 4:
-                advanceBoardWalk(current);
-                break;
-            case 5:
-                advanceRailroad(current);
-                break;
-            case 6:
-                advanceIllinois(current);
-                break;
-            case 7:
-                advanceUtility(current);
-                break;
-            case 8:
-                jailFree(current);
-                break;
-            case 9:
-                toJail(current);
-                break;
-            case 10:
-                advanceReading(current);
-                break;
-            case 11:
-                buildingLoan(current);
-                break;
-            case 12:
-                bankDividend(current);
-                break;
-            case 13:
-                goBack(current);
-                break;
-            case 14:
-                electedChairman(current);
-                break;
-            case 15:
-                poorTax(current);
-                break;
-        }
-    }
-
-    private void advanceToGo(Player current) {
-        current.changePosition(0);
-        image(primaryStage, "File:src/board/chance/advanceToGo.jpg");
-    }
-
-    private void advanceStCharles(Player current) {
-        current.changePosition(10);
-        image(primaryStage, "File:src/board/chance/advanceStCharles.jpg");
-    }
-
-    private void repairs(Player current) {
-        int total = 0;
-        total -= (current.getHouse() * 25);
-        total -= (current.getHotel() * 100);
-        current.changeMoney(total);
-        image(primaryStage, "File:src/board/chance/repairs.jpg");
-    }
-
-    private void advanceBoardWalk(Player current) {
-        current.changePosition(37);
-        image(primaryStage, "File:src/board/chance/advanceBoardWalk.jpg");
-    }
-
-    private void advanceRailroad(Player current) {
-        if (current.getPosition() < 5 || current.getPosition() > 36)
-            current.changePosition(5);
-        else if (current.getPosition() < 15)
-            current.changePosition(15);
-        else if (current.getPosition() < 25)
-            current.changePosition(25);
-        else if (current.getPosition() < 35)
-            current.changePosition(35);
-        image(primaryStage, "File:src/board/chance/advanceRailroad.jpg");
-    }
-
-    private void advanceIllinois(Player current) {
-        current.changePosition(17);
-        image(primaryStage, "File:src/board/chance/advanceIllinois.jpg");
-    }
-
-    private void advanceUtility(Player current) {
-        if (current.getPosition() < 18 || current.getPosition() < 24)
-            current.changePosition(18);
-        else if (current.getPosition() < 23)
-            current.changePosition(23);
-        image(primaryStage, "File:src/board/chance/advanceUtility.jpg");
-    }
-
-    private void jailFree(Player current) {
-        current.jailFreeCard(true);
-        image(primaryStage, "File:src/board/chance/jailFree.jpg");
-    }
-
-    private void toJail(Player current) {
-        current.toJail();
-        image(primaryStage, "File:src/board/chance/toJail.jpg");
-    }
-
-    private void advanceReading(Player current) {
-        current.changePosition(15);
-        image(primaryStage, "File:src/board/chance/advanceReading.jpg");
-    }
-
-    private void buildingLoan(Player current) {
-        current.reduceMoney(150);
-        image(primaryStage, "File:src/board/chance/buildingLoan.jpg");
-    }
-
-    private void bankDividend(Player current) {
-        current.addMoney(50);
-        image(primaryStage, "File:src/board/chance/bankDividend.jpg");
-    }
-
-    private void goBack(Player current) {
-        int position;
-        position = current.getPosition() - 3;
-        current.changePosition(position);
-        image(primaryStage, "File:src/board/chance/goBack.jpg");
-    }
-
-    private void electedChairman(Player current) {
-        for (int i = 0; i < board.players.length(); i++) {
-            current[i].changeMoney(50);
-        }
-        image(primaryStage, "File:src/board/chance/electedChairman.jpg");
-    }
-
     private void poorTax(Player current) {
         current.changeMoney(-15);
-        image(primaryStage, "File:src/board/chance/poorTax.jpg");
-    }
-
-    private image (stage primaryStage, String imagePath) {
-
-        Image cardPic = new Image(imagePath);
-        ImageView showImage = new ImageView(cardPic);
-
-        Button closeButton = new Button("ok");
-        closeButton.setOnAction(event -> primaryStage.close());
-
-        StackPane layout = new StackPane();
-        layout.getChrildren().addAll(imageView, closeButton);
-
-        StackPane.setAlignment(closeButton, javafx.geometry.pos.BOTTOM_CENTER);
-
-        Scene windowSize = new Scene(layout, 400, 300);
-
-        primaryStage.setTitle("Chance Card Drawn");
-        primaryStage.setScene(windowSize);
-
-        primaryStage.show();
     }
 }
-
-*/

@@ -50,27 +50,27 @@ public class Board {
     public void initBoard(){
         tiles.add(new Go(200));
         tiles.add(new Property("Mediteranian Avenue", 60, new int[]{2,10,30,90,160,250}, 50, Colors.BROWN, 1));
-        //tiles.add(new CommunityChest());
+        tiles.add(new CommunityChestTileAdapter());
         tiles.add(new Property("Baltic Avenue", 60, new int[]{4,20,60,180,320,450}, 50, Colors.BROWN, 3));
         tiles.add(new Tax("Income Tax", "Uncle Sam wants the juiciest cut, 10% or $200.", false));
         tiles.add(new Railroad("Reading Railroad", 200));
         tiles.add(new Property("Oriental Avenua", 100, new int[]{6,30,90,270,400,550}, 50, Colors.LIGHT_BLUE, 6));
-        //tiles.add(new Chance());
+        tiles.add(new ChanceTileAdapter());
         tiles.add(new Property("Vermont Avenue", 100, new int[]{6,30,90,270,400,550}, 50, Colors.LIGHT_BLUE, 8));
         tiles.add(new Property("Connecticut Avenue", 120, new int[]{8,40,100,300,450,600}, 50, Colors.LIGHT_BLUE, 9));
         tiles.add(new Jail(50, "Jail"));
         tiles.add(new Property("St. Charles Place", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 11));
-        tiles.add(new Utility(150, "Electric Company"))
+        tiles.add(new Utility(150, "Electric Company"));
         tiles.add(new Property("States Avenue", 140, new int[]{10,50,150,450,625,750}, 100, Colors.PINK, 13));
         tiles.add(new Property("Virginia Avenue", 160, new int[]{12,60,180,500,700,900}, 100, Colors.PINK, 14));
         tiles.add(new Railroad("Pennsylvania Railroad", 200));
         tiles.add(new Property("St. James Place", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 16));
-        //tiles.add(new CommunityChestTileAdapter());
+        tiles.add(new CommunityChestTileAdapter());
         tiles.add(new Property("Tennessee Avenue", 180, new int[]{14,70,200,550,750,950}, 100, Colors.ORANGE, 18));
         tiles.add(new Property("New York Avenue", 200, new int[]{16,80,220,600,800,1000}, 100, Colors.ORANGE, 19));
         tiles.add(new FreeParking("Free Parking", 20));
         tiles.add(new Property("Kentucky Avenue", 220, new int[]{18,90,250,700,875,1050}, 150, Colors.RED, 21));
-        //tiles.add(new ChanceTileAdapter());
+        tiles.add(new ChanceTileAdapter());
         tiles.add(new Property("Indiana Avenue", 220, new int[]{18,90,250,700,875,1050}, 150, Colors.RED, 23));
         tiles.add(new Property("Illinois Avenue", 240, new int[]{20,110,330,800,975,1150}, 150, Colors.RED, 24));
         tiles.add(new Railroad("B&O Railroad", 200));
@@ -81,86 +81,50 @@ public class Board {
         tiles.add(new GoToJail("Go To Jail!"));
         tiles.add(new Property("Pacific Avenue", 300, new int[]{26,130,390,900,1100,1275}, 200, Colors.GREEN, 31));
         tiles.add(new Property("North Carolina Avenue", 300, new int[]{26,130,390,900,1100,1275}, 200, Colors.GREEN, 32));
-        //tiles.add(new CommunityChestTileAdapter())
+        tiles.add(new CommunityChestTileAdapter());
         tiles.add(new Property("Pennsylvania Ave", 320, new int[]{28,150,450,1000,1200,1400}, 200, Colors.GREEN, 34));
         tiles.add(new Railroad("Short Line", 200));
-        //tiles.add(new ChanceTileAdapter());
+        tiles.add(new ChanceTileAdapter());
         tiles.add(new Property("Park Place", 350, new int[]{35,175,500,1100,1300,1500}, 200, Colors.DARK_BLUE, 36));
         tiles.add(new Tax("Luxury Tax", "You look too rich, time to pay Uncle Sam.", true));
         tiles.add(new Property("Boardwalk", 400, new int[]{50,200,600,1400,1700,2000}, 200, Colors.DARK_BLUE, 38));
-
-
-        // Set color groups
-        List<Property> browns = new ArrayList<>(Arrays.asList(
-            (Property) getTile(1),
-            (Property) getTile(3)
-        ));
-        for (Property prop : browns) {
-            prop.setColorSet(browns);
-        }
-
-        List<Property> lightBlues = new ArrayList<>(Arrays.asList(
-            (Property) getTile(6),
-            (Property) getTile(8),
-            (Property) getTile(9)
-            ));
-            for (Property prop : lightBlues) {
-                prop.setColorSet(lightBlues);
-            }
-            List<Property> pinks = new ArrayList<>(Arrays.asList(
-                (Property) getTile(11),
-                (Property) getTile(13),
-                (Property) getTile(14)
-                ));
-            for (Property prop : pinks) {
-                prop.setColorSet(pinks);
-            }
-
-            List<Property> oranges = new ArrayList<>(Arrays.asList(
-                (Property) getTile(16),
-                (Property) getTile(18),
-                (Property) getTile(19)
-            ));
-            for (Property prop : oranges) {
-                prop.setColorSet(oranges);
-            }
-
-            List<Property> reds = new ArrayList<>(Arrays.asList(
-                (Property) getTile(21),
-                (Property) getTile(23),
-                (Property) getTile(24)
-            ));
-            for (Property prop : reds) {
-                prop.setColorSet(reds);
-            }
-
-            List<Property> yellows = new ArrayList<>(Arrays.asList(
-                (Property) getTile(26),
-                (Property) getTile(27),
-                (Property) getTile(29)
-            ));
-            for (Property prop : yellows) {
-                prop.setColorSet(yellows);
-            }
-
-            List<Property> greens = new ArrayList<>(Arrays.asList(
-                (Property) getTile(31),
-                (Property) getTile(32),
-                (Property) getTile(34)
-            ));
-            for (Property prop : greens) {
-                prop.setColorSet(greens);
-            }
-
-            List<Property> dBlues = new ArrayList<>(Arrays.asList(
-                (Property) getTile(36),
-                (Property) getTile(38)
-            ));
-            for (Property prop : dBlues) {
-                prop.setColorSet(dBlues);
-            }
     }
 
+    private void setColorGroup(List<Integer> tileIndexes, List<Property> properties) {
+        for (int index : tileIndexes) {
+            properties.add((Property) getTile(index)); // Assume getTile returns the correct tile type
+        }
+        for (Property prop : properties) {
+            prop.setColorSet(properties); // Assign the same color set to all properties in the group
+        }
+    }
+
+    // Set all color groups for properties
+    public void setColorGroups() {
+        List<Property> browns = new ArrayList<>();
+        setColorGroup(Arrays.asList(1, 3), browns);
+        
+        List<Property> lightBlues = new ArrayList<>();
+        setColorGroup(Arrays.asList(6, 8, 9), lightBlues);
+        
+        List<Property> pinks = new ArrayList<>();
+        setColorGroup(Arrays.asList(11, 13, 14), pinks);
+        
+        List<Property> oranges = new ArrayList<>();
+        setColorGroup(Arrays.asList(16, 18, 19), oranges);
+        
+        List<Property> reds = new ArrayList<>();
+        setColorGroup(Arrays.asList(21, 23, 24), reds);
+        
+        List<Property> yellows = new ArrayList<>();
+        setColorGroup(Arrays.asList(26, 27, 29), yellows);
+        
+        List<Property> greens = new ArrayList<>();
+        setColorGroup(Arrays.asList(31, 32, 34), greens);
+        
+        List<Property> dBlues = new ArrayList<>();
+        setColorGroup(Arrays.asList(36, 38), dBlues);
+    }
 
     // Absolute move (move player x to position y where position 0 is go 1 is next etc 40 is "in jail")
     public void movePlayerToPosition(Player player, int position) {

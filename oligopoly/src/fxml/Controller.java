@@ -321,6 +321,25 @@ public class Controller {
     }
 
     private void clickDisplayTile(int position){
+        if(position == 40){
+            Image image = new Image("/fxml/propImg/" + 17 + ".png");
+            clickImg.setImage(image);
+            clickedAddress.setText("Click a Tile to get Information");
+            clickedSet.setText("Or Mortgage and Unmortgage");
+            clickedOwner.setText("Or Buy House if you own it");
+            clickedOwnersOthers.setText("");
+            clickedRent.setText("");
+            clickedUpgrade.setText("");
+            clickedUpgradeRent.setText("");
+            clickedMortgaged.setText("");
+            clickedMortgageCost.setText("");
+            clickedMortgageValue.setText("");
+
+            mortgage.setVisible(false);
+            upgrade.setVisible(false);
+            return;
+        }
+
         Tile tile = board.getTile(position);
         ArrayList<String> input = tile.getTileInfo();
         //update display
@@ -505,23 +524,6 @@ public class Controller {
             mortgage.setVisible(false);
             upgrade.setVisible(false);
         }
-        if(position == 40){
-            Image image = new Image("/fxml/propImg/" + 17 + ".png");
-            clickImg.setImage(image);
-            clickedAddress.setText("Click a Tile to get Information");
-            clickedSet.setText("Or Mortgage and Unmortgage");
-            clickedOwner.setText("Or Buy House if you own it");
-            clickedOwnersOthers.setText("");
-            clickedRent.setText("");
-            clickedUpgrade.setText("");
-            clickedUpgradeRent.setText("");
-            clickedMortgaged.setText("");
-            clickedMortgageCost.setText("");
-            clickedMortgageValue.setText("");
-
-            mortgage.setVisible(false);
-            upgrade.setVisible(false);
-        }
     }
 
     // These are hooked up to the buttons for testing/development
@@ -578,6 +580,7 @@ public class Controller {
         Tile tile = board.getTile(position);
         updateLandedInfo(position);
         tile.landOn(currentPlayer);
+        playersTable.refresh();
     }
 
     @FXML
