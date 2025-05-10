@@ -48,6 +48,7 @@ public class Property extends Tile{
         this.isMortgaged = false;
         this.index = index;
         this.houseLabel = null;
+        this.colorSet = new ArrayList<>();
     }
 
     // Match properties based on color. Call this AFTER all properties have been constructed
@@ -70,6 +71,7 @@ public class Property extends Tile{
 
         if (propertyOwner != null) this.propertyOwned = false;
         else this.propertyOwned = true;
+        this.colorSet = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -244,28 +246,28 @@ public class Property extends Tile{
 
     //////////////// Purchase tile test method ////////////////
     private void showPurchasePopup(Player player) {
-    Stage popup = new Stage();
-    popup.initModality(Modality.APPLICATION_MODAL);
-    popup.setTitle("Buy Property");
+        Stage popup = new Stage();
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.setTitle("Buy Property");
 
-    Label label = new Label(player.getName() + ", would you like to buy " + name + " for $" + purchasePrice + "?");
+        Label label = new Label(player.getName() + ", would you like to buy " + name + " for $" + purchasePrice + "?");
 
-    Button buyButton = new Button("Buy");
-    Button passButton = new Button("Pass");
+        Button buyButton = new Button("Buy");
+        Button passButton = new Button("Pass");
 
-    buyButton.setOnAction(e -> {
-        buyProperty(player);
-    });
+        buyButton.setOnAction(e -> {
+            buyProperty(player);
+        });
 
-    passButton.setOnAction(e -> {
-        popup.close();
-    });
+        passButton.setOnAction(e -> {
+            popup.close();
+        });
 
-    VBox layout = new VBox(10, label, buyButton, passButton);
-    layout.setStyle("-fx-padding: 20;");
-    popup.setScene(new Scene(layout, 300, 150));
-    popup.showAndWait();
-}
+        VBox layout = new VBox(10, label, buyButton, passButton);
+        layout.setStyle("-fx-padding: 20;");
+        popup.setScene(new Scene(layout, 300, 150));
+        popup.showAndWait();
+    }
 
     
 

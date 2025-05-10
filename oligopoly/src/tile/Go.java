@@ -8,8 +8,9 @@ public class Go extends Tile{
 
     private final int collectMoney;
 
-    public Go(int collectMoney) {
+    public Go(String name, int collectMoney) {
         this.collectMoney = collectMoney;
+        this.name = name;
     }
 
     public void setName(String name) {

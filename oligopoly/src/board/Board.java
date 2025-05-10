@@ -48,7 +48,7 @@ public class Board {
     public Tile getTile(int tile) {return tiles.get(tile);}
 
     public void initBoard(){
-        tiles.add(new Go(200));
+        tiles.add(new Go("Go", 200));
         tiles.add(new Property("Mediteranian Avenue", 60, new int[]{2,10,30,90,160,250}, 50, Colors.BROWN, 1));
         tiles.add(new CommunityChestTileAdapter());
         tiles.add(new Property("Baltic Avenue", 60, new int[]{4,20,60,180,320,450}, 50, Colors.BROWN, 3));

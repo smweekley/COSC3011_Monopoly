@@ -118,5 +118,4 @@ public class PopupManager {
         popupStage.setScene(scene);
         popupStage.show();
     }
-
 }
