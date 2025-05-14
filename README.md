@@ -4,6 +4,8 @@ Miro Link: [here](https://miro.com/app/board/uXjVIZ-dYXQ=/)
 
 Group project
 
+# How to Use
 
-javac --module-path ".\lib\javafx\lib" --add-modules javafx.controls,javafx.fxml -d bin src/*.java src/board/*.java src/fxml/*.java src/player/*.java src/tile/*.java
-java --module-path ".\lib\javafx\lib" --add-modules javafx.controls,javafx.fxml -cp classFiles Main
+1. Clone/download the repo.
+
+2. Run the run.bat script on a Windows machine, functionality not guaranteed on Linux or Mac.
